@@ -1,5 +1,3 @@
-const { hasUncaughtExceptionCaptureCallback } = require('process');
-
 class File {
     constructor (name, size) {
         this.name = name;
