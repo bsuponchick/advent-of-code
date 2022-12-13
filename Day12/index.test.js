@@ -13,69 +13,60 @@ class Terrain {
         this.south = null;
         this.east = null;
         this.west = null;
-        this.beenNorth = false;
-        this.beenSouth = false;
-        this.beenEast = false;
-        this.beenWest = false;
         this.visited = false;
-
+        this.distance = Number.MAX_VALUE;
         this.id = id;
     }
 
-    visit = (from) => {
-        if (from) {
-            console.log(`Moving from ${from.id} to ${this.id}`);
-            if (from.north !== null && (this.id === from.north.id)) {
-                from.beenNorth = true;
-            } else if (from.south !== null && (this.id === from.south.id)) {
-                from.beenSouth = true;
-            } else if (from.east !== null && (this.id === from.east.id)) {
-                from.beenEast = true;
-            } else if (from.west !== null && (this.id === from.west.id)) {
-                from.beenWest = true;
-            }
+    visit = () => {
+        this.visited = true;
+        this.report();
 
-            // from.report();
+        if (this.canMoveNorth()) {
+            this.north.distance = this.distance + 1;
+        }
+
+        if (this.canMoveSouth()) {
+            this.south.distance = this.distance + 1;
+        }
+
+        if (this.canMoveEast()) {
+            this.east.distance = this.distance + 1;
+        }
+
+        if (this.canMoveWest()) {
+            this.west.distance = this.distance + 1;
         }
     }
 
-    canVisitFrom = (from) => {
-        // console.log(`Trying to navigate from Terrain ${from.id} of elevation ${from.elevation} to Terrain ${this.id} of elevation ${this.elevation}.`);
-        // if (this.visited === true) {
-        //     console.log(`You've already been to Terrain ${this.id}`);
-        // }
+    canMoveNorth = () => {
+        return !!(this.north && this.canVisit(this.north));
+    }
 
-        let roadAlreadyTraveled = false;
+    canMoveSouth = () => {
+        return !!(this.south && this.canVisit(this.south));
+    }
 
-        if (this.north !== null && from.id === this.north.id && from.beenSouth) {
-            // console.log(`Road Already Traveled From North`);
-            roadAlreadyTraveled = true;
-        } else if (this.south !== null && from.id === this.south.id && from.beenNorth) {
-            // console.log(`Road Already Traveled From South`);
-            roadAlreadyTraveled = true;
-        } else if (this.east !== null && from.id === this.east.id && from.beenWest) {
-            // console.log(`Road Already Traveled From East`);
-            roadAlreadyTraveled = true;
-        } else if (this.west !== null && from.id === this.west.id && from.beenEast) {
-            // console.log(`Road Already Traveled From West`);
-            roadAlreadyTraveled = true;
-        }
+    canMoveEast = () => {
+        return !!(this.east && this.canVisit(this.east));
+    }
 
-        const assessment = (roadAlreadyTraveled === false) && (Math.abs(this.elevation - from.elevation) <= 1);
-        // if (assessment) {
-        //     console.log(`Moving to Terrain ${this.id}`);
-        // } else {
-        //     console.log(`Can't move to Terrain ${this.id}`);
-        // }
-        return assessment;
+    canMoveWest = () => {
+        return !!(this.west && this.canVisit(this.west));
+    }
+
+    canVisit = (destination) => {
+        return !!((destination.visited === false) && (destination.elevation - this.elevation <= 1));
     }
 
     report = () => {
         console.log(`Terrain ${this.id}:`);
-        console.log(`North: ${this.north ? `${this.north.id}, visited: ${this.beenNorth}` : 'null'}`);
-        console.log(`South: ${this.south ? `${this.south.id}, visited: ${this.beenSouth}` : 'null'}`);
-        console.log(`East: ${this.east ? `${this.east.id}, visited: ${this.beenEast}` : 'null'}`);
-        console.log(`West: ${this.west ? `${this.west.id}, visited: ${this.beenWest}` : 'null'}`);
+        console.log(`North: ${this.north ? `${this.north.id}, visited: ${this.north.visited}` : 'null'}`);
+        console.log(`South: ${this.south ? `${this.south.id}, visited: ${this.south.visited}` : 'null'}`);
+        console.log(`East: ${this.east ? `${this.east.id}, visited: ${this.east.visited}` : 'null'}`);
+        console.log(`West: ${this.west ? `${this.west.id}, visited: ${this.west.visited}` : 'null'}`);
+        console.log(`Distance: ${this.distance}`);
+        console.log(`Visited: ${this.visited}`);
         if (this.isStart) {
             console.log(`>>> This is the Starting Terrain <<<`);
         }
@@ -88,110 +79,41 @@ class Terrain {
 
 class Hiker {
     constructor() {
-        this.terrainVisited = [];
-        this.potentialDistancesToGoal = [];
-    }
-
-    getCurrentPosition = () => {
-        return this.terrainVisited[this.terrainVisited.length - 1];
+        this.currentPosition = null;
+        this.unvisitedTerrain = [];
     }
 
     navigate = (terrain) => {
-        const currentPosition = this.getCurrentPosition();
-        // console.log(`Terrain visited: ${this.terrainVisited.length}`);
-        this.terrainVisited.push(terrain);
-        terrain.visit(currentPosition);
+        console.log(`Trying to visit ${terrain.id}`);
+        terrain.visit();
 
         if (terrain.isEnd) {
-            console.log(`Woot woot I've hit the goal, adding ${this.terrainVisited.length} to possible routes.`);
-            this.potentialDistancesToGoal.push(this.terrainVisited.length);
-
-            // Backup two and keep searching
-            //console.log(`Backing up to try and search for shorter routes.`);
-            this.backup();
-        } else if (this.canMove()) {
-            // Moving one space toward goal
-            this.moveToGoal();
-        } else if (terrain.isStart) {
-            this.report();
+            console.log(`Woot woot I've hit the goal.  The shortest route is ${terrain.distance}.`);
         } else {
-            this.backup();
+            console.log(`Index of current terrain is ${this.unvisitedTerrain.indexOf(terrain)}`);
+            this.unvisitedTerrain.splice(this.unvisitedTerrain.indexOf(terrain), 1);
+            this.moveToGoal();
         }
     }
 
-    getShortestPathToGoal = () => {
-        this.potentialDistancesToGoal.sort((a, b) => {
-            if (a < b) {
+    sortUnvisitedTerrain = () => {
+        this.unvisitedTerrain.sort((a, b) => {
+            if (a.distance < b.distance) {
                 return -1;
-            } else if (a > b) {
+            } else if (a.distance > b.distance) {
                 return 1;
-            } else {
+            } else { 
                 return 0;
             }
         });
-
-        // Don't count the starting node
-        return this.potentialDistancesToGoal[0] - 1;
-    }
-
-    report = () => {
-        console.log(`The shortest path to the goal is ${this.getShortestPathToGoal()} moves.`);
-    }
-
-    canMove = () => {
-        // console.log(`Can Move North: ${this.canMoveNorth()}`);
-        // console.log(`Can Move South: ${this.canMoveSouth()}`);
-        // console.log(`Can Move East: ${this.canMoveEast()}`);
-        // console.log(`Can Move West: ${this.canMoveWest()}`);
-        return this.canMoveNorth() || this.canMoveSouth() || this.canMoveEast() || this.canMoveWest();
-    }
-
-    canMoveNorth = () => {
-        const currentPosition = this.getCurrentPosition();
-        return !!(currentPosition.north && currentPosition.north.canVisitFrom(currentPosition));
-    }
-
-    canMoveSouth = () => {
-        const currentPosition = this.getCurrentPosition();
-        return !!(currentPosition.south && currentPosition.south.canVisitFrom(currentPosition));
-    }
-
-    canMoveEast = () => {
-        const currentPosition = this.getCurrentPosition();
-        return !!(currentPosition.east && currentPosition.east.canVisitFrom(currentPosition));
-    }
-
-    canMoveWest = () => {
-        const currentPosition = this.getCurrentPosition();
-        return !!(currentPosition.west && currentPosition.west.canVisitFrom(currentPosition));
-    }
-
-    backup = () => {
-        const previousTerrain = this.terrainVisited.pop();
-
-        //console.log(`Going back to Terrain ${twoBackTerrain.id} from Terrain ${previousTerrain.id}`);
-        this.moveToGoal();
     }
 
     moveToGoal = () => {
-        // We'll always try north, then south, then east, then west
-        const currentPosition = this.getCurrentPosition();
-
-        if (this.canMoveNorth()) {
-            //console.log(`Moving north to Terrain ${currentPosition.north.id}`);
-            this.navigate(currentPosition.north);
-        } else if (this.canMoveSouth()) {
-            //console.log(`Moving south to Terrain ${currentPosition.south.id}`);
-            this.navigate(currentPosition.south);
-        } else if (this.canMoveEast()) {
-            //console.log(`Moving east to Terrain ${currentPosition.east.id}`);
-            this.navigate(currentPosition.east);
-        } else if (this.canMoveWest()) {
-            //console.log(`Moving west to Terrain ${currentPosition.west.id}`);
-            this.navigate(currentPosition.west);
+        this.sortUnvisitedTerrain();
+        if (this.unvisitedTerrain[0].distance === Number.MAX_VALUE) {
+            console.log(`Oh no, I can't seem to find a path.`);
         } else {
-            console.log(`I can't move, backing up.`);
-            this.backup();
+            this.navigate(this.unvisitedTerrain[0]);
         }
     }
 }
@@ -217,9 +139,9 @@ describe('When the Hiker moves', () => {
         });
 
         const hiker = new Hiker();
-        hiker.terrainVisited.push(map[0]);
+        hiker.currentPosition = map[0];
+        hiker.unvisitedTerrain = map;
+        map[0].distance = 0;
         hiker.moveToGoal();
-
-        expect(hiker.getShortestPathToGoal()).toBe(27);
     });
 });
