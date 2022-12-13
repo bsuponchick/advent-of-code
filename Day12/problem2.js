@@ -1,5 +1,3 @@
-const { formatWithOptions } = require('util');
-
 class Terrain {
     constructor(letter, id) {
         if (letter === 'S') {
