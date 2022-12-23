@@ -1,7 +1,7 @@
 let jetPatterns = [];
 let debug = false;
-const MAX_ROCKS = 2022;
-//const MAX_ROCKS = 15;
+const MAX_ROCKS = 1000000000000;
+//const MAX_ROCKS = 100;
 
 class Piece {
     constructor (yCoord, height) {
@@ -11,6 +11,9 @@ class Piece {
     
     fall = () => {
         this.yCoord = this.yCoord - 1;
+        if (debug) {
+            console.log(`Piece is now at y coordinate ${this.yCoord}`);
+        }
     }
 
     print = () => {
@@ -102,18 +105,15 @@ parseLine = (line) => {
 
 pieceCanDrop = (piece, gameboard) => {
     let canDrop = true;
-    const rowsToEvaluate = gameboard.slice(piece.yCoord - 1, piece.yCoord + 1);
+    const rowsToEvaluate = gameboard.slice(piece.yCoord - 1, piece.yCoord + piece.height);
     
     for (let i = 0; i < rowsToEvaluate.length - 1; i++) {
         const top = Array.from(rowsToEvaluate[i + 1]);
         const bottom = Array.from(rowsToEvaluate[i]);
-        // console.log(`Top is ${JSON.stringify(top)}`);
-        // console.log(`Bottom is ${bottom}`);
 
         for (let j = 0; j < top.length; j++) {
             if (top[j] === '@') {
                 let spaceBelow = bottom[j];
-                // console.log(`Space Below is ${spaceBelow} at index ${j}`);
                 if ((spaceBelow === '#') || (spaceBelow === '-')) {
                     canDrop = false;
                 }
@@ -131,27 +131,22 @@ pieceCanMove = (piece, gameboard, jet) => {
     
     for (let i = 0; i < rowsToEvaluate.length - 1; i++) {
         const row = Array.from(rowsToEvaluate[i + 1]);
-        // console.log(`Row is ${JSON.stringify(row)}`);
 
         for (let j = 0; j < row.length; j++) {
             if (row[j] === '@') {
                 if (jet === '<') {
                     let spaceLeft = row[j - 1];
-                    // console.log(`Space Left is ${spaceLeft} at index ${j - 1}`);
                     if ((spaceLeft === '#') || (spaceLeft === '|')) {
                         canMove = false;
                     }
                 } else if (jet === '>') {
                     let spaceRight = row[j + 1];
-                    // console.log(`Space Right is ${spaceRight} at index ${j + 1}`);
                     if ((spaceRight === '#') || (spaceRight === '|')) {
                         canMove = false;
                     }
                 }
             }
         }
-
-        // console.log(`Piece Can Move: ${canMove}`);
     }
 
     return canMove;
@@ -159,29 +154,23 @@ pieceCanMove = (piece, gameboard, jet) => {
 
 gravity = (piece, gameboard) => {
     // Only need to evaluate the rows occupied by the piece and the one below it.
-    // piece.print();
     if (debug) {
         console.log(`Rock falls 1 unit:`);
     }
 
     for (let i = 0; i < piece.height; i++) {
         const fallingRow = Array.from(gameboard[piece.yCoord + i]);
-        // console.log(`Falling row is ${fallingRow.join('')}`);
 
         for (let j = 0; j < fallingRow.length; j++) {
             if (fallingRow[j] === '@') {
-                // console.log(`Left side is ${gameboard[piece.yCoord + i - 1].substring(0, j)}`);
-                // console.log(`Right side is ${gameboard[piece.yCoord + i - 1].substring(j + 1)}`);
                 gameboard[piece.yCoord + i - 1] = `${gameboard[piece.yCoord + i - 1].substring(0, j)}@${gameboard[piece.yCoord + i - 1].substring(j + 1)}`;
             }
         }
 
         gameboard[piece.yCoord + i] = gameboard[piece.yCoord + i].replaceAll('@', '.');
-
-        // console.log(`New row is ${gameboard[piece.yCoord + i - 1]}`);
     }
 
-    if (gameboard[gameboard.length - 1] === '|.......|') {
+    while (gameboard[gameboard.length - 1] === '|.......|') {
         gameboard.pop();
     }
     piece.fall();
@@ -195,7 +184,6 @@ applyJet = (piece, gameboard, jet) => {
         
         for (let i = 0; i < piece.height; i++) {
             const movingRow = Array.from(gameboard[piece.yCoord + i]);
-            // console.log(`Moving row is ${movingRow.join('')}`);
 
             if (jet === '<') {
                 const newRow = [];
@@ -217,7 +205,6 @@ applyJet = (piece, gameboard, jet) => {
                     }
                 }
 
-                // console.log(`New row should be ${newRow.join('')}`);
                 gameboard[piece.yCoord + i] = newRow.join('');
             } else if (jet === '>') {
                 const newRow = [];
@@ -239,7 +226,6 @@ applyJet = (piece, gameboard, jet) => {
                     }
                 }
 
-                // console.log(`New row should be ${newRow.join('')}`);
                 gameboard[piece.yCoord + i] = newRow.join('');
             }
         }
@@ -251,7 +237,7 @@ applyJet = (piece, gameboard, jet) => {
 }
 
 var lineReader = require('readline').createInterface({
-    input: require('fs').createReadStream('./sample.txt')
+    input: require('fs').createReadStream('./input.txt')
 });
 
 lineReader.on('line', (line) => {
@@ -296,7 +282,10 @@ lineReader.on('line', (line) => {
         jet();
     }
 
-    const convertRocksToObstacles = () => {        
+    const convertRocksToObstacles = () => {       
+        if (debug) {
+            console.log(`Converting rock to obstacles`);
+        } 
         gameboard.forEach((row, index) => {
             gameboard[index] = row.replaceAll('@', '#');
         });
