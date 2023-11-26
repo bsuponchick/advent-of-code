@@ -5,7 +5,7 @@ const DEBUG = {
     NONE: 0
 };
 
-let debug = DEBUG.TRACE;
+let debug = DEBUG.INFO;
 
 class PriorityQueue {
     constructor () {
@@ -280,12 +280,12 @@ class Wayfinder {
                 const blizzardsAtTimeX = this.weatherForecast[newCost % this.weatherForecast.length];
 
                 if (debug >= DEBUG.TRACE) {
-                    console.log(`There will be blizzards in tiles ${JSON.stringify(blizzardsAtTimeX.map((tile) => { return `{${tile.x},${tile.y}};` }))}`);
+                    console.log(`There will be blizzards in tiles ${JSON.stringify(blizzardsAtTimeX)}`);
                 }
 
                 if (blizzardsAtTimeX) {
                     candidates = candidates.filter((candidate) => {
-                        return blizzardsAtTimeX.indexOf(candidate.tile) === -1;
+                        return blizzardsAtTimeX[candidate.tile.id] === undefined;
                     });
                 }
                 
@@ -308,15 +308,17 @@ generateWeatherForecast = (blizzards, map) => {
 
     console.log(`Calculating weather forecast for ${repeatingWeatherAfterTurns} turns...`);
     while (counter < repeatingWeatherAfterTurns) {
-        const weatherAtTurn = blizzards.map((blizzard) => {
-            return blizzard.determineTile(counter);
+        const tileIdMap = {};
+        blizzards.forEach((blizzard) => {
+            const tile = blizzard.determineTile(counter);
+            tileIdMap[tile.id] = true;
         });
 
         if (debug >= DEBUG.TRACE) {
-            console.log(`Turn ${counter} blizzards: ${JSON.stringify(weatherAtTurn.map((tile) => { return `{${tile.x},${tile.y}};` }))}`);
+            console.log(`Turn ${counter} blizzards: ${JSON.stringify(tileIdMap)}`);
         }
 
-        weatherForecast.push(weatherAtTurn);
+        weatherForecast.push(tileIdMap);
 
         counter++;
     }
@@ -359,7 +361,7 @@ parseLine = (line) => {
 };
 
 var lineReader = require('readline').createInterface({
-    input: require('fs').createReadStream('./sample2.txt')
+    input: require('fs').createReadStream('./input.txt')
 });
 
 lineReader.on('line', (line) => {
