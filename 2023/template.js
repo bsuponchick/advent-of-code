@@ -1,21 +1,20 @@
-const arguments = process.argv;
-const debug = arguments.includes('--debug');
-const test = arguments.includes('--test');
-
-execute = () => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const args = process.argv;
+const debug = args.includes('--debug');
+const test = args.includes('--test');
+const execute = () => {
     // This is where you add your code
-}
-
-parseLine = (line) => {
+};
+const parseLine = (line) => {
     // Include line parsing logic here
 };
-
 var lineReader = require('readline').createInterface({
     input: require('fs').createReadStream(test ? './test.txt' : './input.txt')
 });
-
 lineReader.on('line', (line) => {
     parseLine(line);
 }).on('close', () => {
     execute();
 });
+//# sourceMappingURL=template.js.map
