@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { getDigitsFromString } from './2';
+import { getDigitsFromString } from './2.utils';
 
 describe('Day 1 - Part 2', () => {
     describe(`getDigitsFromString`, () => {
