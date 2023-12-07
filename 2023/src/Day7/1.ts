@@ -8,6 +8,13 @@ const hands: Hand[] = [];
 
 const execute = () => {
     hands.sort(HandComparator);
+
+    if (debug) {
+        hands.forEach((hand) => {
+            console.log(`${hand.cards} ${hand.bid} ${hand.type}`);
+        });
+    }
+
     const bids = hands.map((hand) => hand.bid);
 
     const totalWinnings = bids.reduce((total, bid, currentIndex) => {
