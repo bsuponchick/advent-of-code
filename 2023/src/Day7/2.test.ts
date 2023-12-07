@@ -125,8 +125,8 @@ describe('Day 7 - Part 2', () => {
             expect(HandComparator(new Hand('KAAAA', 1), new Hand('AKKKK', 1))).toEqual(-1);
         });
 
-        test(`should return 1 when a is AAAAJ and b is BBBBB`, () => {
-            expect(HandComparator(new Hand('AAAAJ', 1), new Hand('BBBBB', 1))).toEqual(1);
+        test(`should return 1 when a is AAAAJ and b is KKKKK`, () => {
+            expect(HandComparator(new Hand('AAAAJ', 1), new Hand('KKKKK', 1))).toEqual(1);
         });
 
         test(`should return 1 when a is T55J5 and b is KK677`, () => {
