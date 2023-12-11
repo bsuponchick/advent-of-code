@@ -1,4 +1,4 @@
-import { Node, parseNodes, establishConnections, identifyTilesSurroundedByPipes, expandMap, findStartingNode, getCircuit } from "./2.logic";
+import { Node, parseNodes, establishConnections, identifyTilesSurroundedByPipes, expandMap, findStartingNode, getCircuit, printTileValues, printVisitedNodes } from "./2.logic";
 
 const args = process.argv;
 const debug = args.includes('--debug');
@@ -24,22 +24,11 @@ const execute = () => {
         nodes.push(parseNodes(line));
     });
 
-    establishConnections(nodes);
-
-    const startingNode = findStartingNode(nodes);
-
-    if (startingNode === null) {
-        throw new Error('Starting node was null');
-    } else {
-        const circuit = getCircuit(startingNode);
-    }
-
+    console.log(`Identifying tiles surrounded by pipes...`);
     const tilesSurroundedByPipes = identifyTilesSurroundedByPipes(nodes);
 
     console.log(`--------- Tiles ---------`);
-    nodes.forEach(line => {
-        console.log(line.map(node => node.visited ? '#' : node.value).join(''));
-    });
+    printTileValues(nodes);
 
     console.log(`Tiles surrounded by pipes: ${tilesSurroundedByPipes.length}`);
 }

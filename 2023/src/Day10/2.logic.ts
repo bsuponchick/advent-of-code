@@ -48,9 +48,9 @@ export class Node {
     connectToOutside() {
         this.connectedToOutside = true;
 
-        if (this.value === '.' || this.value === '~') {
-            this.value = 'O';
-        }
+        // if (this.value === '.' || this.value === '~') {
+        //     this.value = 'O';
+        // }
     }
 
     isConnectedToOutside(): boolean {
@@ -62,7 +62,7 @@ export class Node {
     }
 
     isPipe = () => {
-        return (this.value === '|') || (this.value === '-') || (this.value === 'F') || (this.value === '7') || (this.value === 'J') || (this.value === 'L');
+        return (this.value === '|') || (this.value === '-') || (this.value === 'F') || (this.value === '7') || (this.value === 'J') || (this.value === 'L') || (this.value === 'S');
     }
 }
 
@@ -264,133 +264,72 @@ export const expandMap = (map: string[]): string[] => {
 };
 
 export const identifyTilesSurroundedByPipes = (map: Node[][]): Node[] => {
-    const squaresToCheck = getSquaresToCheck(map);
+    establishConnections(map);
+    getCircuit(findStartingNode(map) as Node);
 
-    squaresToCheck.forEach((square, index) => {
-        if (index === 0) {
-            // On the first square, any . or ~ tile has a path
-            square.forEach((node) => {
-                if (node.value === '.' || node.value === '~') {
-                    node.connectToOutside();
-                }
-            });
-        } else {
-            // On subsequent squares, a . or ~ tile has a path if it is adjacent to a tile that has a path
-            square.forEach(node => {
-                if (node.value === '.' || node.value === '~') {
-                    const neighbors = node.getNeighbors();
-                    if (neighbors.some(neighbor => neighbor.isConnectedToOutside())) {
+    let found = 0;
+    let started = false;
+    let round = 0;
+
+    while (found > 0 || started === false) {
+        found = 0;
+        round++;
+        started = true;
+
+        console.log(`Starting round ${round}`);
+
+        for (let row = 0; row < map.length; row++) {
+            for (let column = 0; column < map[0].length; column++) {
+                const node = map[row][column];
+                
+                if ((node.visited === false) && (node.isConnectedToOutside() === false)) {
+                    if ((row === 0) || (row === map.length - 1) || (column === 0) || (column === map[0].length - 1)) {
                         node.connectToOutside();
+                        found++;
+                    } else {
+                        const neighbors: Node[] = [];
+
+                        if (row > 0) {
+                            neighbors.push(map[row - 1][column]);
+                        }
+
+                        if (row < map.length - 1) {
+                            neighbors.push(map[row + 1][column]);
+                        }
+
+                        if (column > 0) {
+                            neighbors.push(map[row][column - 1]);
+                        }
+
+                        if (column < map[0].length - 1) {
+                            neighbors.push(map[row][column + 1]);
+                        }
+
+                        if (neighbors.some(neighbor => neighbor.isConnectedToOutside())) {
+                            node.connectToOutside();
+                            found++;
+                        }
                     }
                 }
-            });
+            }
         }
-    });
 
-    let countAdditionalPathsFound = 0;
-    let startedFinalPasses = false;
-
-    while (countAdditionalPathsFound !== 0 || startedFinalPasses === false) {
-        countAdditionalPathsFound = 0;
-        startedFinalPasses = true;
-
-        squaresToCheck.forEach((square) => {
-            square.forEach((node) => {
-                if (node.value === '.' || node.value === '~') {
-                    const neighbors = node.getNeighbors();
-                    if (neighbors.some(neighbor => neighbor.isConnectedToOutside())) {
-                        node.connectToOutside();
-                        countAdditionalPathsFound++;
-                    }
-                }
-            });
-        });
+        console.log(`Found ${found} new with paths to the outside`);
     }
-    map.forEach(row => {
-        row.forEach(node => {
-            if (node.isConnectedToOutside()) {
-                node.neighbors.forEach(neighbor => {
-                    neighbor.connectToOutside();
-                });
-            }
-        });
-    });
 
-    console.log(`Moving Inward Complete`);
-    map.forEach(row => {
-        console.log(row.map((node) => {
-            if (node.value === 'O') {
-                return node.value;
-            } else if (node.visited) {
-                return '#';
-            } else if (node.isConnectedToOutside()) {
-                return 'X';
-            } else {
-                return node.value;
-            }
-        }).join(''));
-    });
+    console.log(`Completed looking for paths to the outside.`);
+    printTileValues(map);
 
-    // Set all external nodes to the left as connected to the outside
-    map.forEach(row => {
-        let hitWall = false;
+    // Contract map to remove all of the filler nodes
+    const contractedMap = contractMap(map);
 
-        row.forEach((node, index) => {
-            if (hitWall === false) {
-                if (index < row.length - 1) {
-                    if (node.visited === false || node.value === '~') {
-                        node.connectToOutside();
-                    }
-
-                    if (row[index + 1].visited === true) {
-                        hitWall = true;                        
-                    }
-                }
-            }
-        });
-    });
-
-    // Set all external nodes to the right as connected to the outside
-    map.forEach(row => {
-        let hitWall = false;
-
-        row.reverse().forEach((node, index) => {
-            if (hitWall === false) {
-                if (index < row.length - 1) {
-                    if (node.visited === false || node.value === '~') {
-                        node.connectToOutside();
-                    }
-
-                    if (row[index + 1].visited === true) {
-                        hitWall = true;                        
-                    }
-                }
-            }
-        });
-
-        row.reverse();
-    });
-
-    console.log(`Moving Inward From Left and Right Complete`);
-    map.forEach(row => {
-        console.log(row.map((node) => {
-            if (node.value === 'O') {
-                return node.value;
-            } else if (node.visited) {
-                return '#';
-            } else if (node.isConnectedToOutside()) {
-                return 'X';
-            } else {
-                return node.value;
-            }
-        }).join(''));
-    });
-
-
+    // Contracted Map
+    console.log(`Contracted Map`);
+    printMap(contractedMap);
 
     const tilesSurroundedByPipes: Node[] = [];
-    map.forEach(row => {
-        row.forEach(node => {
+    contractedMap.forEach(row => {
+        row.forEach((node, index) => {
             if ((node.isConnectedToOutside() === false) && (node.visited === false) && (node.value !== '~')) {
                 node.setInternal();
                 tilesSurroundedByPipes.push(node);
@@ -402,67 +341,44 @@ export const identifyTilesSurroundedByPipes = (map: Node[][]): Node[] => {
     return tilesSurroundedByPipes;
 };
 
-export const getSquaresToCheck = (map: Node[][]): Node[][] => {
-    let left = 0;
-    let right = map[0].length - 1;
+export const contractMap = (map: Node[][]): Node[][] => {
+    // Contract map to remove all of the filler nodes
+    const contractedMap = map.map((row) => {
+        return row.filter((node, index) => {
+        return index % 2 === 1; 
+        });
+    });
 
-    const squaresToCheck: Node[][] = [];
+    contractedMap.shift();
+    contractedMap.pop();
 
-    while (left <= right) {
-        const square: Node[] = [];
-
-        const topNodes = map[left];
-        const bottomNodes = map[map.length - left - 1];
-
-        const leftNodes = map.map(row => row[left]);
-        const rightNodes = map.map(row => row[right]);
-
-        if (topNodes !== undefined) {
-            topNodes.forEach((node, index) => {
-                if (index >= left && index <= right) {
-                    square.push(node);
-                }
-            });
-        }
-
-        if (rightNodes !== undefined) {
-            rightNodes.forEach((node, index) => {
-                // Top right node already added in previous loop
-                if (index > left && index <= right) {
-                    square.push(node);
-                }
-            });
-        }
-
-        if (bottomNodes !== undefined) {
-            bottomNodes.forEach((node, index) => {
-                // Bottom right node already added in previous loop
-                if (index >= left && index < right) {
-                    square.push(node);
-                }
-            });
-        }
-
-        if (leftNodes !== undefined) {
-            leftNodes.forEach((node, index) => {
-                // Top left and bottom right nodes already added in previous loops
-                if (index > left && index < right) {
-                    square.push(node);
-                }
-            });
-        }
-
-        squaresToCheck.push(square);
-
-        left++;
-        right--;
-    }
-
-    return squaresToCheck;
+    return contractedMap;
 };
 
 export const printMap = (map: Node[][]) => {
     map.forEach(row => {
         console.log(row.map(node => node.value).join(''));
+    });
+};
+
+export const printTileValues = (map: Node[][]) => {
+    map.forEach(row => {
+        console.log(row.map((node) => {
+            if (node.value === 'O') {
+                return 'O';
+            } else if (node.visited) {
+                return '#';
+            } else if (node.isConnectedToOutside()) {
+                return 'O';
+            } else {
+                return node.value;
+            }
+        }).join(''));
+    });
+};
+
+export const printVisitedNodes = (map: Node[][]) => {
+    map.forEach(row => {
+        console.log(row.map(node => node.visited ? '#' : ' ').join(''));
     });
 };

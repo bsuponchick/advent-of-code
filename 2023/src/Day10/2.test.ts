@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Node, establishConnections, parseNodes, findStartingNode, getCircuit, getSquaresToCheck, identifyTilesSurroundedByPipes, expandMap, printMap } from './2.logic';
+import { Node, establishConnections, parseNodes, findStartingNode, getCircuit, identifyTilesSurroundedByPipes, expandMap, printMap } from './2.logic';
 
 describe('Day 10 - Part 2', () => {
     describe(`Node`, () => {
@@ -193,32 +193,6 @@ describe('Day 10 - Part 2', () => {
         });
     });
 
-    describe(`getSquaresToCheck`, () => {
-        test(`should return 6 squares for the sample input`, () => {
-            const map: string[] = [
-                '...........',
-                '.S-------7.',
-                '.|F-----7|.',
-                '.||.....||.',
-                '.||.....||.',
-                '.|L-7.F-J|.',
-                '.|..|.|..|.',
-                '.L--J.L--J.',
-                '...........'
-            ];
-            const graph: Node[][] = [];
-
-            map.forEach((row) => {
-                graph.push(parseNodes(row));
-            });
-            
-            establishConnections(graph);
-            const squaresToCheck = getSquaresToCheck(graph);
-
-            expect(squaresToCheck.length).toEqual(6);
-        });
-    });
-
     describe(`identifyTilesSurroundedByPipes`, () => {
         test(`should return 4 tiles for the sample map with a direct path out.`, () => {
             const map: string[] = [
@@ -237,10 +211,7 @@ describe('Day 10 - Part 2', () => {
     
             expandedMap.forEach((row) => {
                 graph.push(parseNodes(row));
-            });
-            
-            establishConnections(graph);
-            getCircuit(findStartingNode(graph) as Node);
+            });    
 
             const tilesSurroundedByPipes = identifyTilesSurroundedByPipes(graph);
             expect(tilesSurroundedByPipes.length).toEqual(4);
@@ -265,8 +236,6 @@ describe('Day 10 - Part 2', () => {
                 graph.push(parseNodes(row));
             });
             
-            establishConnections(graph);
-            getCircuit(findStartingNode(graph) as Node);
             const tilesSurroundedByPipes = identifyTilesSurroundedByPipes(graph);
     
             expect(tilesSurroundedByPipes.length).toEqual(4);
