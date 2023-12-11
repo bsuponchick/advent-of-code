@@ -3,6 +3,7 @@ import { Node, parseNodes, establishConnections, identifyTilesSurroundedByPipes,
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
+const test2 = args.includes('--test2');
 
 const nodes: Node[][] = [];
 const map: string[] = [];
@@ -27,9 +28,6 @@ const execute = () => {
     console.log(`Identifying tiles surrounded by pipes...`);
     const tilesSurroundedByPipes = identifyTilesSurroundedByPipes(nodes);
 
-    console.log(`--------- Tiles ---------`);
-    printTileValues(nodes);
-
     console.log(`Tiles surrounded by pipes: ${tilesSurroundedByPipes.length}`);
 }
 
@@ -38,7 +36,7 @@ const parseLine = (line: string) => {
 };
 
 var lineReader = require('readline').createInterface({
-    input: require('fs').createReadStream(test ? './test.txt' : './input.txt')
+    input: require('fs').createReadStream(test ? './test.txt' : test2 ? './test2.txt' : './input.txt')
 });
 
 lineReader.on('line', (line) => {

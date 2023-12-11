@@ -323,20 +323,20 @@ export const identifyTilesSurroundedByPipes = (map: Node[][]): Node[] => {
     // Contract map to remove all of the filler nodes
     const contractedMap = contractMap(map);
 
-    // Contracted Map
-    console.log(`Contracted Map`);
-    printMap(contractedMap);
-
     const tilesSurroundedByPipes: Node[] = [];
     contractedMap.forEach(row => {
         row.forEach((node, index) => {
-            if ((node.isConnectedToOutside() === false) && (node.visited === false) && (node.value !== '~')) {
+            if ((node.isConnectedToOutside() === false) && (node.visited === false)) {
                 node.setInternal();
                 tilesSurroundedByPipes.push(node);
                 node.value = 'I';
             }
         });
     });
+
+    // Contracted Map
+    console.log(`Contracted Map`);
+    printTileValues(contractedMap);
 
     return tilesSurroundedByPipes;
 };
@@ -365,11 +365,11 @@ export const printTileValues = (map: Node[][]) => {
     map.forEach(row => {
         console.log(row.map((node) => {
             if (node.value === 'O') {
-                return 'O';
+                return ' ';
             } else if (node.visited) {
-                return '#';
+                return node.value;
             } else if (node.isConnectedToOutside()) {
-                return 'O';
+                return ' ';
             } else {
                 return node.value;
             }
