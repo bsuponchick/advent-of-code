@@ -4,7 +4,6 @@ export class Node {
     id: string = '';
     value: string = '';
     neighbors: Node[] = [];
-    distanceFromStart: number = -1;
     visited: boolean = false;
 
     constructor(value: string) {
@@ -22,10 +21,6 @@ export class Node {
 
     isStartingNode(): boolean {
         return this.value === 'S';
-    }
-
-    setDistanceFromStart(distance: number) {
-        this.distanceFromStart = distance;
     }
 
     connectsNorth(): boolean {

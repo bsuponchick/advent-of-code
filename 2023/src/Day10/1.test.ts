@@ -57,12 +57,6 @@ describe('Day 10 - Part 1', () => {
             expect(node.isStartingNode()).toEqual(false);
         });
 
-        test(`setDistanceFromStart should increment the distance from start`, () => {
-            const node = new Node('.');
-            node.setDistanceFromStart(15);
-            expect(node.distanceFromStart).toEqual(15);
-        });
-
         test(`visit should set visited to true`, () => {
             const node = new Node('.');
             expect(node.visited).toEqual(false);
