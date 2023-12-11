@@ -231,25 +231,13 @@ export const expandMap = (map: string[]): string[] => {
                 } else if (character === 'F') {
                     expandedLine += `~${character}`;
                 } else if (character === '7') {
-                    if ((characters[index - 1] === 'F') || (characters[index - 1] === 'L') || (characters[index - 1] === '-')) {
-                        expandedLine += `-${character}`;
-                    } else {
-                        expandedLine += `~${character}`;
-                    }
+                    expandedLine += `-${character}`;
                 } else if (character === 'J') {
-                    if ((characters[index - 1] === 'F') || (characters[index - 1] === 'L') || (characters[index - 1] === '-')) {
-                        expandedLine += `-${character}`;
-                    } else {
-                        expandedLine += `~${character}`;
-                    }
+                    expandedLine += `-${character}`;
                 } else if (character === 'L') {
                     expandedLine += `~${character}`;
                 } else if (character === '-') {
-                    if ((characters[index - 1] === 'F') || (characters[index - 1] === 'L') || (characters[index - 1] === '-')) {
-                        expandedLine += `-${character}`;
-                    } else {
-                        expandedLine += `~${character}`;
-                    }              
+                    expandedLine += `-${character}`;                
                 } else if (character === '|') {
                     expandedLine += `~${character}`;
                 } else if (character === 'S') {
@@ -299,11 +287,6 @@ export const identifyTilesSurroundedByPipes = (map: Node[][]): Node[] => {
         }
     });
 
-    console.log(`Initial Sweep Complete`);
-    map.forEach(row => {
-        console.log(row.map(node => node.value).join(''));
-    });
-
     let countAdditionalPathsFound = 0;
     let startedFinalPasses = false;
 
@@ -323,12 +306,6 @@ export const identifyTilesSurroundedByPipes = (map: Node[][]): Node[] => {
             });
         });
     }
-
-    console.log(`Moving Inward Complete`);
-    map.forEach(row => {
-        console.log(row.map(node => node.value).join(''));
-    });
-
     map.forEach(row => {
         row.forEach(node => {
             if (node.isConnectedToOutside()) {
@@ -482,4 +459,10 @@ export const getSquaresToCheck = (map: Node[][]): Node[][] => {
     }
 
     return squaresToCheck;
+};
+
+export const printMap = (map: Node[][]) => {
+    map.forEach(row => {
+        console.log(row.map(node => node.value).join(''));
+    });
 };

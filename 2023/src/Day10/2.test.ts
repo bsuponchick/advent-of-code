@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Node, establishConnections, parseNodes, findStartingNode, getCircuit, getSquaresToCheck, identifyTilesSurroundedByPipes, expandMap } from './2.logic';
+import { Node, establishConnections, parseNodes, findStartingNode, getCircuit, getSquaresToCheck, identifyTilesSurroundedByPipes, expandMap, printMap } from './2.logic';
 
 describe('Day 10 - Part 2', () => {
     describe(`Node`, () => {
@@ -241,8 +241,8 @@ describe('Day 10 - Part 2', () => {
             
             establishConnections(graph);
             getCircuit(findStartingNode(graph) as Node);
+
             const tilesSurroundedByPipes = identifyTilesSurroundedByPipes(graph);
-    
             expect(tilesSurroundedByPipes.length).toEqual(4);
         });
         
