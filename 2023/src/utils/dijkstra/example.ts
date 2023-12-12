@@ -1,4 +1,4 @@
-import { Graph, Node, Edge, findShortestPath } from './dijkstra';
+import { Graph, Node, Edge } from './dijkstra';
 
 
 const execute = () => {
@@ -29,7 +29,7 @@ const execute = () => {
     graph.addEdge(new Edge({start: four, end: five, weight: 6}));
     graph.addEdge(new Edge({start: five, end: six, weight: 6}));
 
-    const { distance, path } = findShortestPath({graph, start: zero, end: five});
+    const { distance, path } = graph.findShortestPath(zero, five);
 
     console.log(`The shortest path from ${zero.id} to ${five.id} is ${distance}`);
     console.log(`The path is ${path.map((node) => node.id).join(' -> ')}`);

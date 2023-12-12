@@ -1,5 +1,5 @@
 export class Node {
-    id: any;
+    id: string;
     edges: Edge[];
     visited: boolean;
 
@@ -77,62 +77,55 @@ export class Graph {
     reset() {
         this.nodes.forEach((node) => node.reset());
     }
-}
 
-interface ShortestPathInput {
-    graph: Graph;
-    start: Node;
-    end: Node;
-}
-
-export const findShortestPath = (props: ShortestPathInput) => {
-    const distance = {};
-    const previous = {};
-    const unvisited: Node[] = [];
-    const { graph, start, end } = props;
-
-    graph.nodes.forEach((node) => {
-        distance[node.id] = Infinity;
-        previous[node.id] = null;
-        unvisited.push(node);
-    });
-
-    distance[start.id] = 0;
-
-    while (unvisited.length > 0) {
-        const current = unvisited.reduce((min, node) => {
-            if (distance[node.id] < distance[min.id]) {
-                return node;
-            } else {
-                return min;
-            }
-        }, unvisited[0]);
-
-        unvisited.splice(unvisited.indexOf(current), 1);
-
-        current.edges.forEach((edge) => {
-            const neighbor = edge.start === current ? edge.end : edge.start;
-            const alt = distance[current.id] + edge.weight;
-
-            if (alt < distance[neighbor.id]) {
-                distance[neighbor.id] = alt;
-                previous[neighbor.id] = current;
-            }
+    findShortestPath(start: Node, end: Node): {distance: number, path: Node[]} {
+        const distance = {};
+        const previous = {};
+        const unvisited: Node[] = [];
+    
+        this.nodes.forEach((node) => {
+            distance[node.id] = Infinity;
+            previous[node.id] = null;
+            unvisited.push(node);
         });
-    }
-
-    const path: Node[] = [];
-    let current: Node = end;
-
-    while (current !== start) {
-        path.push(current);
-        current = previous[current.id];
-    }
-
-    path.push(start);
-
-    return {
-        distance: distance[end.id],
-        path: path.reverse()
+    
+        distance[start.id] = 0;
+    
+        while (unvisited.length > 0) {
+            const current = unvisited.reduce((min, node) => {
+                if (distance[node.id] < distance[min.id]) {
+                    return node;
+                } else {
+                    return min;
+                }
+            }, unvisited[0]);
+    
+            unvisited.splice(unvisited.indexOf(current), 1);
+    
+            current.edges.forEach((edge) => {
+                const neighbor = edge.start === current ? edge.end : edge.start;
+                const alt = distance[current.id] + edge.weight;
+    
+                if (alt < distance[neighbor.id]) {
+                    distance[neighbor.id] = alt;
+                    previous[neighbor.id] = current;
+                }
+            });
+        }
+    
+        const path: Node[] = [];
+        let current: Node = end;
+    
+        while (current !== start) {
+            path.push(current);
+            current = previous[current.id];
+        }
+    
+        path.push(start);
+    
+        return {
+            distance: distance[end.id],
+            path: path.reverse()
+        };
     };
 }
