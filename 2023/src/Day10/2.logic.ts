@@ -276,7 +276,7 @@ export const identifyTilesSurroundedByPipes = (map: Node[][]): Node[] => {
         round++;
         started = true;
 
-        console.log(`Starting round ${round}`);
+        // console.log(`Starting round ${round}`);
 
         for (let row = 0; row < map.length; row++) {
             for (let column = 0; column < map[0].length; column++) {
@@ -314,11 +314,11 @@ export const identifyTilesSurroundedByPipes = (map: Node[][]): Node[] => {
             }
         }
 
-        console.log(`Found ${found} new with paths to the outside`);
+        // console.log(`Found ${found} new with paths to the outside`);
     }
 
-    console.log(`Completed looking for paths to the outside.`);
-    printTileValues(map);
+    // console.log(`Completed looking for paths to the outside.`);
+    // printTileValues(map);
 
     // Contract map to remove all of the filler nodes
     const contractedMap = contractMap(map);
@@ -335,8 +335,8 @@ export const identifyTilesSurroundedByPipes = (map: Node[][]): Node[] => {
     });
 
     // Contracted Map
-    console.log(`Contracted Map`);
-    printTileValues(contractedMap);
+    // console.log(`Contracted Map`);
+    // printTileValues(contractedMap);
 
     return tilesSurroundedByPipes;
 };
