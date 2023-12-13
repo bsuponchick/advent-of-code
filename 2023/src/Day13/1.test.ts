@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { determineHorizontalLineOfReflection, getColumnsAsRows } from './1.logic';
+import { determineHorizontalLineOfReflection, determineVerticalLineOfReflection, getColumnsAsRows } from './1.logic';
 
 describe('Day 13 - Part 1', () => {
     describe('determineHorizontalLineOfReflection', () => {
@@ -31,6 +31,38 @@ describe('Day 13 - Part 1', () => {
 
             const result = determineHorizontalLineOfReflection(pattern);
             expect(result).toEqual(-1);
+        });
+    });
+
+    describe('determineVerticalLineOfReflection', () => {
+        test(`should return -1 for the horizontal sample pattern.`, () => {
+            const pattern = [
+                '#...##..#',
+                '#....#..#',
+                '..##..###',
+                '#####.##.',
+                '#####.##.',
+                '..##..###',
+                '#....#..#'
+            ];
+
+            const result = determineVerticalLineOfReflection(pattern);
+            expect(result).toEqual(-1);
+        });
+
+        test(`should return 5 for the vertical sample pattern.`, () => {
+            const pattern = [
+                '#.##..##.',
+                '..#.##.#.',
+                '##......#',
+                '##......#',
+                '..#.##.#.',
+                '..##..##.',
+                '#.#.##.#.'
+            ];
+
+            const result = determineVerticalLineOfReflection(pattern);
+            expect(result).toEqual(5);
         });
     });
 

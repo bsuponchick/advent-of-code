@@ -1,4 +1,4 @@
-import { determineHorizontalLineOfReflection, getColumnsAsRows } from "./1.logic";
+import { determineHorizontalLineOfReflection, determineVerticalLineOfReflection } from "./1.logic";
 
 const args = process.argv;
 const debug = args.includes('--debug');
@@ -16,8 +16,7 @@ const execute = () => {
         if (horizontalLineOfReflection !== -1) {
             horizontalLinesOfReflection.push(horizontalLineOfReflection);
         } else {
-            const columns = getColumnsAsRows(pattern);
-            const verticalLineOfReflection = determineHorizontalLineOfReflection(columns);
+            const verticalLineOfReflection = determineVerticalLineOfReflection(pattern);
             
             if (verticalLineOfReflection === -1) {
                 console.log(`Problem found with pattern:\n${pattern.join('\n')}`)

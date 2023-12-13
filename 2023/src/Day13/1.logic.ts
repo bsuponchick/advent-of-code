@@ -42,6 +42,11 @@ export const determineHorizontalLineOfReflection = (pattern: string[]): number =
     }
 };
 
+export const determineVerticalLineOfReflection = (pattern: string[]): number => {
+    const columns = getColumnsAsRows(pattern);
+    return determineHorizontalLineOfReflection(columns);
+};
+
 export const getColumnsAsRows = (pattern: string[]): string[] => {
     const columns: string[] = [];
 
