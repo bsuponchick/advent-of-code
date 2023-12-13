@@ -75,11 +75,16 @@ export const determineValidity = (springs: string, arrangements: number[]): bool
 
 export const parseSprings = (line: string): { springs: string, arrangements: number[] } => {
     let [springs, arrangementsString] = line.split(' ');
+
     // Can reduce the possible permutations by removing subsequent .'s
     springs = springs.replace(/\.+/g, '\.');
+
+    const springs5x = `${springs}?${springs}?${springs}?${springs}?${springs}`;
+    const arrangementsArray = arrangementsString.split(',').map((arrangement) => parseInt(arrangement, 10));
+    const arrangements5x = [...arrangementsArray, ...arrangementsArray, ...arrangementsArray, ...arrangementsArray, ...arrangementsArray]
     
     return {
-        springs,
-        arrangements: arrangementsString.split(',').map((arrangement) => parseInt(arrangement, 10))
+        springs: springs5x,
+        arrangements: arrangements5x
     };
 };
