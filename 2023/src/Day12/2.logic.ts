@@ -34,43 +34,15 @@ export const determinePossibleConfigurations = (inputString: string): string[] =
 };
 
 export const determineValidity = (springs: string, arrangements: number[]): boolean => {
-    let potentiallyValid = false;
+    const reducedSprings = springs.replace(/\.+/g, '.');
+    const goal = arrangements.map((num) => {
+        return Array(num).fill('#').join('') + '.';
+    }).join('');
 
-    if (arrangements.length > 0) {
-        const firstArrangement = arrangements[0];
-        let countContiguousHashes = 0;
-        let nextSubstring = '';
+    const finalSprings = reducedSprings.replace(/\.+/g, ' ').trim();
+    const finalGoal = goal.replace(/\.+/g, ' ').trim();
 
-        for (let i = 0; i < springs.length; i++) {
-            if (springs[i] === '#') {
-                countContiguousHashes++;
-            } else if (countContiguousHashes > 0) {
-                potentiallyValid = false;
-                break;
-            }
-
-            if (countContiguousHashes === firstArrangement) {
-                if (i + 1 === springs.length) {
-                    potentiallyValid = arrangements.length === 1;
-                    break;
-                } else if ((i + 1 < springs.length) && (springs[i + 1] === '.')) {
-                    if (arrangements.length > 1) {
-                        nextSubstring = springs.slice(i + 1);
-                        potentiallyValid = determineValidity(nextSubstring, arrangements.slice(1));
-                        break;
-                    } else {
-                        potentiallyValid = springs.slice(i + 1).indexOf('#') === -1;
-                        break;
-                    }    
-                } else {
-                    potentiallyValid = false;
-                    break;
-                }
-            }
-        };
-    }
-
-    return potentiallyValid;
+    return finalSprings === finalGoal;
 };
 
 export const parseSprings = (line: string): { springs: string, arrangements: number[] } => {
