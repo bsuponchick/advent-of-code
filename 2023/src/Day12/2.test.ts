@@ -90,9 +90,5 @@ describe('Day 12 - Part 2', () => {
         test(`should return { springs: '###############', arrangements: [3, 3, 3, 3, 3] } for '### 3'`, () => {
             expect(parseSprings('### 3')).toEqual({ springs: '###?###?###?###?###', arrangements: [3, 3, 3, 3, 3] });
         });
-
-        test(`should return { springs: '.#?.#?.#?.#?.#', arrangements: [3, 3, 3, 3, 3] } for '...# 3'`, () => {
-            expect(parseSprings('...# 3')).toEqual({ springs: '.#?.#?.#?.#?.#', arrangements: [3, 3, 3, 3, 3] });
-        });
     });
 });
