@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { determinePossibleValidArrangements, determineValidity, determinePossibleConfigurations, parseSprings } from './2.logic';
+import { determinePossibleValidArrangements, determineValidity, determinePossibleConfigurations, parseSprings, expandPermutations } from './2.logic';
 
 describe('Day 12 - Part 2', () => {
     describe('determinePossibleValidArrangements', () => {
@@ -7,25 +7,79 @@ describe('Day 12 - Part 2', () => {
             expect(determinePossibleValidArrangements('???.### 1,1,3')).toBe(1);
         });
 
-        // test(`should return 16384 for '.??..??...?##. 1,1,3'`, () => {
-        //     expect(determinePossibleValidArrangements('.??..??...?##. 1,1,3')).toBe(16384);
-        // });
+        test(`should return 16384 for '.??..??...?##. 1,1,3'`, () => {
+            expect(determinePossibleValidArrangements('.??..??...?##. 1,1,3')).toBe(16384);
+        });
 
-        // test(`should return 1 for '?#?#?#?#?#?#?#? 1,3,1,6'`, () => {
-        //     expect(determinePossibleValidArrangements('?#?#?#?#?#?#?#? 1,3,1,6')).toBe(1);
-        // });
+        test(`should return 1 for '?#?#?#?#?#?#?#? 1,3,1,6'`, () => {
+            expect(determinePossibleValidArrangements('?#?#?#?#?#?#?#? 1,3,1,6')).toBe(1);
+        });
 
-        // test(`should return 16 for '????.#...#... 4,1,1'`, () => {
-        //     expect(determinePossibleValidArrangements('????.#...#... 4,1,1')).toBe(16);
-        // });
+        test(`should return 16 for '????.#...#... 4,1,1'`, () => {
+            expect(determinePossibleValidArrangements('????.#...#... 4,1,1')).toBe(16);
+        });
 
-        // test(`should return 2500 for '????.######..#####. 1,6,5'`, () => {
-        //     expect(determinePossibleValidArrangements('????.######..#####. 1,6,5')).toBe(2500);
-        // });
+        test(`should return 2500 for '????.######..#####. 1,6,5'`, () => {
+            expect(determinePossibleValidArrangements('????.######..#####. 1,6,5')).toBe(2500);
+        });
 
-        // test(`should return 506250 for '?###???????? 3,2,1'`, () => {
-        //     expect(determinePossibleValidArrangements('?###???????? 3,2,1')).toBe(506250);
-        // });
+        test(`should return 506250 for '?###???????? 3,2,1'`, () => {
+            expect(determinePossibleValidArrangements('?###???????? 3,2,1')).toBe(506250);
+        });
+    });
+
+    describe(`expandPermutations`, () => {
+        test(`should return the correct number of permutations for '###'`, () => {
+            expect(expandPermutations(['###']).length).toBe(16);
+
+            expect(expandPermutations(['###'])).toEqual(expect.arrayContaining([
+                '###.###.###.###.###',
+                '###.###.###.#######',
+                '###.###.#######.###',
+                '###.###.###########',
+                '###.#######.###.###',
+                '###.#######.#######',
+                '###.###########.###',
+                '###.###############',
+                '#######.###.###.###',
+                '#######.###.#######',
+                '#######.#######.###',
+                '#######.###########',
+                '###########.###.###',
+                '###########.#######',
+                '###############.###',
+                '###################'
+            ]));
+        });
+
+        test(`should return the correct number of permutations for '...'`, () => {
+            expect(expandPermutations(['...']).length).toBe(16);
+
+            expect(expandPermutations(['...'])).toEqual(expect.arrayContaining([
+                '.',
+                '.#.',
+                '.#.',
+                '.#.#.',
+                '.#.',
+                '.#.#.',
+                '.#.#.',
+                '.#.#.#.',
+                '.#.',
+                '.#.#.',
+                '.#.#.',
+                '.#.#.#.',
+                '.#.#.',
+                '.#.#.#.',
+                '.#.#.#.',
+                '.#.#.#.#.'
+            ]));
+        });
+
+        test(`should return the correct number of permutations for '????.#...#...'`, () => {
+            const expandedPermutations = expandPermutations(determinePossibleConfigurations('????.#...#...'));
+            console.log(`Expanded permutations:\n${expandedPermutations.join('\n')}`);
+            expect(expandPermutations(expandedPermutations).length).toBe(256);
+        });
     });
 
     describe(`determineValidity`, () => {
@@ -84,11 +138,34 @@ describe('Day 12 - Part 2', () => {
             expect(possibleConfigurations.length).toBe(8);
             expect(possibleConfigurations).toEqual(expect.arrayContaining(["###.###", "##..###", "#.#.###", "#...###", ".##.###", ".#..###", "..#.###", "....###"]));
         });
+
+        test(`should return the proper permutations for '????.#...#...'`, () => {
+            const possibleConfigurations = determinePossibleConfigurations('????.#...#...');
+            expect(possibleConfigurations.length).toBe(16);
+            expect(possibleConfigurations).toEqual(expect.arrayContaining([
+                '.....#...#...',
+                '...#.#...#...',
+                '..#..#...#...',
+                '..##.#...#...',
+                '.#...#...#...',
+                '.#.#.#...#...',
+                '.##..#...#...',
+                '.###.#...#...',
+                '#....#...#...',
+                '#..#.#...#...',
+                '#.#..#...#...',
+                '#.##.#...#...',
+                '##...#...#...',
+                '##.#.#...#...',
+                '###..#...#...',
+                '####.#...#...',
+            ]));
+        });
     });
 
     describe(`parseSprings`, () => {
         test(`should return { springs: '###############', arrangements: [3, 3, 3, 3, 3] } for '### 3'`, () => {
-            expect(parseSprings('### 3')).toEqual({ springs: '###?###?###?###?###', arrangements: [3, 3, 3, 3, 3] });
+            expect(parseSprings('### 3')).toEqual({ springs: '###', arrangements: [3, 3, 3, 3, 3] });
         });
     });
 });
