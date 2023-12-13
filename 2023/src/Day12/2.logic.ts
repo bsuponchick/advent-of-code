@@ -34,12 +34,11 @@ export const determinePossibleConfigurations = (inputString: string): string[] =
 };
 
 export const determineValidity = (springs: string, arrangements: number[]): boolean => {
-    const reducedSprings = springs.replace(/\.+/g, '.');
     const goal = arrangements.map((num) => {
         return Array(num).fill('#').join('') + '.';
     }).join('');
 
-    const finalSprings = reducedSprings.replace(/\.+/g, ' ').trim();
+    const finalSprings = springs.replace(/\.+/g, ' ').trim();
     const finalGoal = goal.replace(/\.+/g, ' ').trim();
 
     return finalSprings === finalGoal;
@@ -48,7 +47,10 @@ export const determineValidity = (springs: string, arrangements: number[]): bool
 export const parseSprings = (line: string): { springs: string, arrangements: number[] } => {
     const [springs, arrangementsString] = line.split(' ');
 
-    const springs5x = `${springs}?${springs}?${springs}?${springs}?${springs}`;
+    // Can reduce the number of characters by ignoring subsequent .'s
+    const reducedSprings = springs.replace(/\.+/g, '.');
+
+    const springs5x = `${reducedSprings}?${reducedSprings}?${reducedSprings}?${reducedSprings}?${reducedSprings}`;
     const arrangementsArray = arrangementsString.split(',').map((arrangement) => parseInt(arrangement, 10));
     const arrangements5x = [...arrangementsArray, ...arrangementsArray, ...arrangementsArray, ...arrangementsArray, ...arrangementsArray]
     

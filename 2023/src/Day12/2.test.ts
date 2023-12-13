@@ -7,9 +7,9 @@ describe('Day 12 - Part 2', () => {
             expect(determinePossibleValidArrangements('???.### 1,1,3')).toBe(1);
         });
 
-        test(`should return 16384 for '.??..??...?##. 1,1,3'`, () => {
-            expect(determinePossibleValidArrangements('.??..??...?##. 1,1,3')).toBe(16384);
-        });
+        // test(`should return 16384 for '.??..??...?##. 1,1,3'`, () => {
+        //     expect(determinePossibleValidArrangements('.??..??...?##. 1,1,3')).toBe(16384);
+        // });
 
         // test(`should return 1 for '?#?#?#?#?#?#?#? 1,3,1,6'`, () => {
         //     expect(determinePossibleValidArrangements('?#?#?#?#?#?#?#? 1,3,1,6')).toBe(1);

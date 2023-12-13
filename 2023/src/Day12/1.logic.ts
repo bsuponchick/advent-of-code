@@ -47,9 +47,12 @@ export const determineValidity = (springs: string, arrangements: number[]): bool
 
 export const parseSprings = (line: string): { springs: string, arrangements: number[] } => {
     const [springs, arrangementsString] = line.split(' ');
+
+    // Can reduce the number of characters by ignoring subsequent .'s
+    const reducedSprings = springs.replace(/\.+/g, '.');
     
     return {
-        springs,
+        springs: reducedSprings,
         arrangements: arrangementsString.split(',').map((arrangement) => parseInt(arrangement, 10))
     };
 };
