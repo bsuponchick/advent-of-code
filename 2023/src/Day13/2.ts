@@ -1,4 +1,9 @@
-import { determineHorizontalLineOfReflection, determineVerticalLineOfReflection } from "./2.logic";
+import {
+    determineHorizontalLineOfReflection,
+    determineVerticalLineOfReflection,
+    determineHorizontalLineOfReflectionIfSmudgeExists,
+    determineVerticalLineOfReflectionIfSmudgeExists,
+} from './2.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
@@ -11,17 +16,25 @@ const verticalLinesOfReflection: number[] = [0];
 
 const execute = () => {
     patterns.forEach((pattern) => {
-        const horizontalLineOfReflection = determineHorizontalLineOfReflection(pattern);
+        const initialHorizontalLineOfReflection = determineHorizontalLineOfReflection(pattern);
+        const smudgedHorizontalLineOfReflection = determineHorizontalLineOfReflectionIfSmudgeExists(pattern);
 
-        if (horizontalLineOfReflection !== -1) {
-            horizontalLinesOfReflection.push(horizontalLineOfReflection);
+        console.log(`Initial horizontal line of reflection: ${initialHorizontalLineOfReflection}`);
+        console.log(`Smudged horizontal line of reflection: ${smudgedHorizontalLineOfReflection}`);
+        
+        if (initialHorizontalLineOfReflection !== smudgedHorizontalLineOfReflection) {
+            horizontalLinesOfReflection.push(smudgedHorizontalLineOfReflection);
         } else {
-            const verticalLineOfReflection = determineVerticalLineOfReflection(pattern);
-            
-            if (verticalLineOfReflection === -1) {
-                console.log(`Problem found with pattern:\n${pattern.join('\n')}`)
+            const initialVerticalLineOfReflection = determineVerticalLineOfReflection(pattern);
+            const smudgedVerticalLineOfReflection = determineVerticalLineOfReflectionIfSmudgeExists(pattern);
+
+            console.log(`Initial vertical line of reflection: ${initialVerticalLineOfReflection}`);
+            console.log(`Smudged vertical line of reflection: ${smudgedVerticalLineOfReflection}`);
+
+            if (smudgedVerticalLineOfReflection === -1) {
+                console.log(`Problem found with pattern:\n${pattern.join('\n')}`);
             } else {
-                verticalLinesOfReflection.push(verticalLineOfReflection);
+                verticalLinesOfReflection.push(smudgedVerticalLineOfReflection);
             }
         }
     });
@@ -34,30 +47,32 @@ const execute = () => {
         return sum + current;
     });
 
-    const result = (sumOfHorizontalLinesOfReflection * 100) + sumOfVerticalLinesOfReflection;
+    const result = sumOfHorizontalLinesOfReflection * 100 + sumOfVerticalLinesOfReflection;
     console.log(`Result: ${result}`);
 };
 
 const parseLine = (line: string) => {
-   if (line.trim().length === 0) {
+    if (line.trim().length === 0) {
         indexOfCurrentPattern++;
-   } else {
+    } else {
         if (patterns[indexOfCurrentPattern] === undefined) {
             patterns[indexOfCurrentPattern] = [];
         }
 
         patterns[indexOfCurrentPattern].push(line);
-   }
+    }
 };
 
 var lineReader = require('readline').createInterface({
-    input: require('fs').createReadStream(test ? './test.txt' : './input.txt')
+    input: require('fs').createReadStream(test ? './test.txt' : './input.txt'),
 });
 
-lineReader.on('line', (line) => {
-    parseLine(line);
-}).on('close', () => {
-    execute();
-});
+lineReader
+    .on('line', (line) => {
+        parseLine(line);
+    })
+    .on('close', () => {
+        execute();
+    });
 
 export {};
