@@ -64,6 +64,27 @@ describe('Day 13 - Part 1', () => {
             const result = determineVerticalLineOfReflection(pattern);
             expect(result).toEqual(5);
         });
+
+        test(`should return 1 for the vertical sample pattern.`, () => {
+            const pattern = [
+                '###....##....',
+                '####..#..#..#',
+                '..###.####.##',
+                '..#..######..',
+                '...#.######.#',
+                '#####.#.##.##',
+                '##.#..#..#..#',
+                '##....####...',
+                '....#......#.',
+                '.....#.##.#..',
+                '##...##..##..',
+                '...##.#..#.##',
+                '##..###..###.'
+            ];
+
+            const result = determineVerticalLineOfReflection(pattern);
+            expect(result).toEqual(1);
+        });
     });
 
     describe(`getColumnsAsRows`, () => {

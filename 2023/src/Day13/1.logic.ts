@@ -3,9 +3,7 @@ export const determineHorizontalLineOfReflection = (pattern: string[]): number =
     let isPotentialReflection = false;
 
     for (let i = 0; i < pattern.length; i++) {
-        if (i === 0) {
-            continue;
-        } else if (i < pattern.length - 1) {
+        if (i < pattern.length - 1) {
             if (pattern[i] === pattern[i + 1]) {
                 isPotentialReflection = true;
                 indexOfLineOfReflection = i;
