@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { tiltNorth, parseMap, generateMapString, calculateLoad } from './1.logic';
+import { tiltNorth, tiltSouth, tiltEast, tiltWest, parseMap, generateMapString, calculateLoad } from './1.logic';
 
 describe('Day 13 - Part 1', () => {
     describe(`tiltNorth`, () => {
@@ -41,6 +41,135 @@ describe('Day 13 - Part 1', () => {
             const map = parseMap(input);
             tiltNorth(map);
 
+            expect(generateMapString(map)).toEqual(expectation);
+        });
+    });
+
+    describe(`tiltSouth`, () => {
+        test(`should return ['.', '.', '.', 'O'] when given ['O', '.', '.', '.']`, ( ) => {
+            const input = ['.', '.', '.', 'O'];
+            const map = parseMap(input);
+            tiltSouth(map);
+            
+            expect(generateMapString(map)).toEqual(`.\n.\n.\nO\n`);
+        });
+
+        test(`should return the correct result when given the example input`, () => {
+            const input = [
+                'O....#....',
+                'O.OO#....#',
+                '.....##...',
+                'OO.#O....O',
+                '.O.....O#.',
+                'O.#..O.#.#',
+                '..O..#O..O',
+                '.......O..',
+                '#....###..',
+                '#OO..#....'
+            ];
+
+            const expectation = [
+                '.....#....',
+                '....#....#',
+                '...O.##...',
+                '...#......',
+                'O.O....O#O',
+                'O.#..O.#.#',
+                'O....#....',
+                'OO....OO..',
+                '#OO..###..',
+                '#OO.O#...O'
+            ].join('\n').concat('\n');
+
+            const map = parseMap(input);
+            tiltSouth(map);
+
+            expect(generateMapString(map)).toEqual(expectation);
+        });
+    });
+
+    describe(`tiltEast`, () => {
+        test(`should return ['....O'] when given ['O....']`, ( ) => {
+            const input = ['O....'];
+            const map = parseMap(input);
+            tiltEast(map);
+            
+            expect(generateMapString(map)).toEqual(`....O\n`);
+        });
+
+        test(`should return the correct result when given the example input`, () => {
+            const input = [
+                'O....#....',
+                'O.OO#....#',
+                '.....##...',
+                'OO.#O....O',
+                '.O.....O#.',
+                'O.#..O.#.#',
+                '..O..#O..O',
+                '.......O..',
+                '#....###..',
+                '#OO..#....'
+            ];
+
+            const expectation = [
+                '....O#....',
+                '.OOO#....#',
+                '.....##...',
+                '.OO#....OO',
+                '......OO#.',
+                '.O#...O#.#',
+                '....O#..OO',
+                '.........O',
+                '#....###..',
+                '#..OO#....'
+            ].join('\n').concat('\n');
+
+            const map = parseMap(input);
+            tiltEast(map);
+            
+            expect(generateMapString(map)).toEqual(expectation);
+        });
+    });
+
+    describe(`tiltWest`, () => {
+        test(`should return ['O....'] when given ['....O']`, ( ) => {
+            const input = ['....O'];
+            const map = parseMap(input);
+            tiltWest(map);
+            
+            expect(generateMapString(map)).toEqual(`O....\n`);
+        });
+
+        test(`should return the correct result when given the example input`, () => {
+            const input = [
+                'O....#....',
+                'O.OO#....#',
+                '.....##...',
+                'OO.#O....O',
+                '.O.....O#.',
+                'O.#..O.#.#',
+                '..O..#O..O',
+                '.......O..',
+                '#....###..',
+                '#OO..#....'
+            ];
+
+            const expectation = [
+                'O....#....',
+                'OOO.#....#',
+                '.....##...',
+                'OO.#OO....',
+                'OO......#.',
+                'O.#O...#.#',
+                'O....#OO..',
+                'O.........',
+                '#....###..',
+                '#OO..#....'
+            ].join('\n').concat('\n');
+
+            const map = parseMap(input);
+            tiltWest(map);
+            
             expect(generateMapString(map)).toEqual(expectation);
         });
     });

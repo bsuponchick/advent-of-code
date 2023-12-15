@@ -5,7 +5,7 @@ export class Tile {
     east: Tile | null = null;
     west: Tile | null = null;
 
-    constructor (value: string) {
+    constructor(value: string) {
         this.value = value;
     }
 
@@ -22,19 +22,19 @@ export class Tile {
     }
 
     canMoveNorth(): boolean {
-        return (this.north !== null) && (this.isCubeShaped() === false) && (this.north.isEmpty());
+        return this.north !== null && this.isCubeShaped() === false && this.north.isEmpty();
     }
 
     canMoveSouth(): boolean {
-        return (this.south !== null) && (this.isCubeShaped() === false) && (this.south.isEmpty());
+        return this.south !== null && this.isCubeShaped() === false && this.south.isEmpty();
     }
 
     canMoveEast(): boolean {
-        return (this.east !== null) && (this.isCubeShaped() === false) && (this.east.isEmpty());
+        return this.east !== null && this.isCubeShaped() === false && this.east.isEmpty();
     }
 
     canMoveWest(): boolean {
-        return (this.west !== null) && (this.isCubeShaped() === false) && (this.west.isEmpty());
+        return this.west !== null && this.isCubeShaped() === false && this.west.isEmpty();
     }
 
     moveNorth(): void {
@@ -72,6 +72,48 @@ export const tiltNorth = (map: Tile[][]) => {
             row.forEach((tile) => {
                 if (tile.canMoveNorth()) {
                     tile.moveNorth();
+                }
+            });
+        });
+    }
+};
+
+export const tiltSouth = (map: Tile[][]) => {
+    for (let i = 0; i < map.length; i++) {
+        for (let j = map.length - 1; j >= 0; j--) {
+            const row = map[j];
+
+            row.forEach((tile) => {
+                if (tile.canMoveSouth()) {
+                    tile.moveSouth();
+                }
+            });
+        }
+    }
+};
+
+export const tiltEast = (map: Tile[][]) => {
+    const rowLength = map[0].length;
+
+    for (let i = 0; i < rowLength; i++) {
+        map.forEach((row) => {
+            for (let j = rowLength - 1; j >= 0; j--) {
+                if (row[j].canMoveEast()) {
+                    row[j].moveEast();
+                }
+            }
+        });
+    }
+};
+
+export const tiltWest = (map: Tile[][]) => {
+    const rowLength = map[0].length;
+
+    for (let i = 0; i < rowLength; i++) {
+        map.forEach((row) => {
+            row.forEach((tile) => {
+                if (tile.canMoveWest()) {
+                    tile.moveWest();
                 }
             });
         });
@@ -128,7 +170,7 @@ export const calculateLoad = (map: Tile[][]) => {
     map.forEach((row, index) => {
         row.forEach((tile) => {
             if (tile.isRoundShaped()) {
-                load+= map.length - index;
+                load += map.length - index;
             }
         });
     });
