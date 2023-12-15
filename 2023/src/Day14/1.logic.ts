@@ -127,6 +127,10 @@ export const executeSpinCycle = (map: Tile[][]) => {
     tiltEast(map);
 };
 
+export const determineTargetIndex = (firstRepeatedIndex: number, previousIndex: number, spinCycleCount: number) => {
+    return ((spinCycleCount - previousIndex) % (firstRepeatedIndex - previousIndex)) + previousIndex - 1;
+};
+
 export const parseMap = (map: string[]): Tile[][] => {
     const result: Tile[][] = [];
 

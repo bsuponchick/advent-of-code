@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { tiltNorth, tiltSouth, tiltEast, tiltWest, executeSpinCycle, parseMap, generateMapString, calculateLoad } from './1.logic';
+import { tiltNorth, tiltSouth, tiltEast, tiltWest, executeSpinCycle, parseMap, generateMapString, calculateLoad, determineTargetIndex } from './1.logic';
 
 describe('Day 13 - Part 1', () => {
     describe(`tiltNorth`, () => {
@@ -243,6 +243,14 @@ describe('Day 13 - Part 1', () => {
         });
     });
 
+    describe(`determineTargetIndex`, () => {
+        test(`should return 1 when given 1, 0, 1000000000`, () => {
+            const result = determineTargetIndex(9, 2, 1000000000);
+
+            expect(result).toEqual(5);
+        });
+    });
+
     describe(`calculateLoad`, () => {
         test(`should return 0 when given an empty map`, () => {
             const input = [
@@ -284,6 +292,26 @@ describe('Day 13 - Part 1', () => {
             const result = calculateLoad(map);
 
             expect(result).toEqual(136);
+        });
+
+        test(`should return 64 for the example input`, () => {
+            const input = [
+                '.....#....',
+                '....#...O#',
+                '.....##...',
+                '...#......',
+                '.....OOO#.',
+                '.O#...O#.#',
+                '....O#...O',
+                '......OOOO',
+                '#....###.O',
+               ' #.OOO#..OO'
+            ];
+
+            const map = parseMap(input);
+            const result = calculateLoad(map);
+
+            expect(result).toEqual(64); 
         });
     });
 });
