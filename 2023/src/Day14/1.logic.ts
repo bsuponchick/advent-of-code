@@ -120,6 +120,13 @@ export const tiltWest = (map: Tile[][]) => {
     }
 };
 
+export const executeSpinCycle = (map: Tile[][]) => {
+    tiltNorth(map);
+    tiltWest(map);
+    tiltSouth(map);
+    tiltEast(map);
+};
+
 export const parseMap = (map: string[]): Tile[][] => {
     const result: Tile[][] = [];
 

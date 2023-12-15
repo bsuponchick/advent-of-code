@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { tiltNorth, tiltSouth, tiltEast, tiltWest, parseMap, generateMapString, calculateLoad } from './1.logic';
+import { tiltNorth, tiltSouth, tiltEast, tiltWest, executeSpinCycle, parseMap, generateMapString, calculateLoad } from './1.logic';
 
 describe('Day 13 - Part 1', () => {
     describe(`tiltNorth`, () => {
@@ -171,6 +171,75 @@ describe('Day 13 - Part 1', () => {
             tiltWest(map);
             
             expect(generateMapString(map)).toEqual(expectation);
+        });
+    });
+
+    describe(`executeSpinCycle`, () => {
+        test(`should return the correct result when given the example input`, () => {
+            const input = [
+                'O....#....',
+                'O.OO#....#',
+                '.....##...',
+                'OO.#O....O',
+                '.O.....O#.',
+                'O.#..O.#.#',
+                '..O..#O..O',
+                '.......O..',
+                '#....###..',
+                '#OO..#....'
+            ];
+
+            const expectation = [
+                '.....#....',
+                '....#...O#',
+                '...OO##...',
+                '.OO#......',
+                '.....OOO#.',
+                '.O#...O#.#',
+                '....O#....',
+                '......OOOO',
+                '#...O###..',
+                '#..OO#....'
+            ];
+
+            const map = parseMap(input);
+            executeSpinCycle(map);
+
+            expect(generateMapString(map)).toEqual(expectation.join('\n').concat('\n'));
+        });
+
+        test(`should return the correct result after 2 spin cycles when given the example input`, () => {
+            const input = [
+                'O....#....',
+                'O.OO#....#',
+                '.....##...',
+                'OO.#O....O',
+                '.O.....O#.',
+                'O.#..O.#.#',
+                '..O..#O..O',
+                '.......O..',
+                '#....###..',
+                '#OO..#....'
+            ];
+
+            const expectation = [
+                '.....#....',
+                '....#...O#',
+                '.....##...',
+                '..O#......',
+                '.....OOO#.',
+                '.O#...O#.#',
+                '....O#...O',
+                '.......OOO',
+                '#..OO###..',
+                '#.OOO#...O'
+            ];
+
+            const map = parseMap(input);
+            executeSpinCycle(map);
+            executeSpinCycle(map);
+
+            expect(generateMapString(map)).toEqual(expectation.join('\n').concat('\n'));
         });
     });
 
