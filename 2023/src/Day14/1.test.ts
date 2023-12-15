@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { tiltNorth, tiltSouth, tiltEast, tiltWest, executeSpinCycle, parseMap, generateMapString, calculateLoad, determineTargetIndex } from './1.logic';
 
-describe('Day 13 - Part 1', () => {
+describe('Day 14', () => {
     describe(`tiltNorth`, () => {
         test(`should return ['O', '.', '.', '.'] when given ['.', '.', '.', 'O']`, ( ) => {
             const input = ['O', '.', '.', '.'];
