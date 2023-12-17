@@ -33,6 +33,12 @@ export class Tile {
     isEnergized() {
         return this.energized;
     }
+
+    reset() {
+        this.beams = [];
+        this.energized = false;
+        this.beamCache = [];
+    }
 }
 
 export class Beam {
@@ -220,10 +226,10 @@ export const printEnergizedMap = (map: Tile[][]) => {
     console.log(result);
 };
 
-export const clearAllBeams = (map: Tile[][]) => {
+export const reset = (map: Tile[][]) => {
     map.forEach((row) => {
         row.forEach((tile) => {
-            tile.beams = [];
+            tile.reset();
         });
     });
 };
