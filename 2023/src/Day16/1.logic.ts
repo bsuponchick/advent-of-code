@@ -219,3 +219,30 @@ export const printEnergizedMap = (map: Tile[][]) => {
 
     console.log(result);
 };
+
+export const clearAllBeams = (map: Tile[][]) => {
+    map.forEach((row) => {
+        row.forEach((tile) => {
+            tile.beams = [];
+        });
+    });
+};
+
+export const getCountEnergizedTiles = (map: Tile[][]): number => {
+    while (getCountOfBeams(map) > 0) {
+        getAllBeams(map).forEach((beam) => {
+            beam.move();
+        });
+    }
+
+    let countEnergizedTiles = 0;
+    map.forEach((row) => {
+        row.forEach((tile) => {
+            if (tile.isEnergized()) {
+                countEnergizedTiles++;
+            }
+        });
+    });
+
+    return countEnergizedTiles;
+};
