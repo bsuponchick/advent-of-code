@@ -3,6 +3,7 @@ export enum ModuleType {
     Conjunction = '&',
     Broadcast = 'broadcaster',
     Button = 'button',
+    DeadEnd = 'deadend',
     Unknown = '?',
 }
 
@@ -150,6 +151,9 @@ export class Module {
                 // Button modules send a low pulse
                 this.sendPulse(PulseType.Low);
                 break;
+            case ModuleType.DeadEnd:
+                // Dead End modules ignore pulses
+                break;
             default:
                 throw new Error('Unknown module type');
         }
@@ -186,9 +190,10 @@ export class Module {
         let inDefaultState = false;
 
         switch (this.type) {
-            // Broadcast and Button modules are always in their default state
+            // Broadcast, Button and DeadEnd modules are always in their default state
             case ModuleType.Broadcast:
             case ModuleType.Button:
+            case ModuleType.DeadEnd:
                 inDefaultState = true;
                 break;
             case ModuleType.Conjunction:
