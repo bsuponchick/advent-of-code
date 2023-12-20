@@ -78,7 +78,7 @@ export class PulseQueue {
         const pulse = this.queue.shift();
 
         if (pulse) {
-            console.log(`Sending ${pulse.type} pulse from ${pulse.source.id} to ${pulse.destination.id}`);
+            // console.log(`Sending ${pulse.type} pulse from ${pulse.source.id} to ${pulse.destination.id}`);
             pulse.destination.receivePulse(pulse);
         }
 
