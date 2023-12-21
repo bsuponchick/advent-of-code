@@ -12,6 +12,7 @@ export class Terrain {
     east: Terrain | null = null;
     west: Terrain | null = null;
     visited: boolean = false;
+    traverals: number[] = [];
 
     constructor(type: TerrainType, isStartingPoint: boolean = false) {
         this.type = type;
@@ -59,6 +60,14 @@ export class Terrain {
             (this.south === null || this.south.visited) &&
             (this.east === null || this.east.visited) &&
             (this.west === null || this.west.visited);
+    }
+
+    traverse(steps: number) {
+        this.traverals.push(steps);
+    }
+
+    hasBeenTraversedInSteps(steps: number): boolean {
+        return this.traverals.includes(steps);
     }
 
     visit(): void {
@@ -172,25 +181,35 @@ export class Elf {
 
     takePotentialSteps(maxSteps: number, terrain: Terrain): void {
         if (maxSteps > 0) {
+            terrain.traverse(maxSteps);
+
             // We only care about the potential destinations, not each step along the way.
             if (maxSteps === 1) {
                 this.visitNeighbors(terrain);
             }
 
             if (terrain.canMoveNorth()) {
-                this.takePotentialSteps(maxSteps - 1, terrain.north as Terrain);
+                if (terrain.north?.hasBeenTraversedInSteps(maxSteps - 1) === false) {
+                    this.takePotentialSteps(maxSteps - 1, terrain.north as Terrain);
+                }
             }
 
             if (terrain.canMoveSouth()) {
-                this.takePotentialSteps(maxSteps - 1, terrain.south as Terrain);
+                if (terrain.south?.hasBeenTraversedInSteps(maxSteps - 1) === false) {
+                    this.takePotentialSteps(maxSteps - 1, terrain.south as Terrain);
+                }
             }
 
             if (terrain.canMoveEast()) {
-                this.takePotentialSteps(maxSteps - 1, terrain.east as Terrain);
+                if (terrain.east?.hasBeenTraversedInSteps(maxSteps - 1) === false) {
+                    this.takePotentialSteps(maxSteps - 1, terrain.east as Terrain);
+                }
             }
 
             if (terrain.canMoveWest()) {
-                this.takePotentialSteps(maxSteps - 1, terrain.west as Terrain);
+                if (terrain.west?.hasBeenTraversedInSteps(maxSteps - 1) === false) {
+                    this.takePotentialSteps(maxSteps - 1, terrain.west as Terrain);
+                }
             }
         }
     }
