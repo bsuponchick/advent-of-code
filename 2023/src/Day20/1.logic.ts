@@ -109,6 +109,18 @@ export class Module {
         }
     }
 
+    areMostRecentPulsesAllHigh(): boolean {
+        let allHigh = true;
+        for (const input of this.inputs) {
+            if (this.mostRecentReceivedPulses[input.id] !== PulseType.High) {
+                allHigh = false;
+                break;
+            }
+        }
+
+        return allHigh;
+    }
+
     receivePulse(pulse: QueuedPulse) {
         // Store the most recent pulse from this source
         this.mostRecentReceivedPulses[pulse.source.id] = pulse.type;
@@ -120,14 +132,8 @@ export class Module {
                 break;
             case ModuleType.Conjunction:
                 // Conjunction modules send a low pulse if all inputs most recently sent a high pulse, otherwise it sends a high pulse
-                let allHigh = true;
-                for (const input of this.inputs) {
-                    if (this.mostRecentReceivedPulses[input.id] !== PulseType.High) {
-                        allHigh = false;
-                        break;
-                    }
-                }
-
+                let allHigh = this.areMostRecentPulsesAllHigh();
+                
                 if (allHigh) {
                     this.sendPulse(PulseType.Low);
                 } else {

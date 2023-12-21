@@ -1,4 +1,5 @@
 import { Module, PulseQueue, ModuleType, PulseType } from "./1.logic";
+import { calculateLCM } from "../utils/math/lcm";
 
 const args = process.argv;
 const debug = args.includes('--debug');
@@ -49,9 +50,23 @@ const execute = () => {
     }
 
     let buttonPressCount = 0;
-    let rxHasReceivedLowPulse = false;
+    const firstHighPulses: { [id: string]: number } = {};
 
-    while (rxHasReceivedLowPulse === false) {
+    const moduleThatCanPulseRx = modules.find((module) => {
+        return module.destinations.find((destination) => {
+            return destination.id === 'rx';
+        });
+    });
+
+    if (moduleThatCanPulseRx) {
+        moduleThatCanPulseRx.inputs.forEach((input) => {
+            firstHighPulses[input.id] = -1;
+        });
+    }
+
+    console.log(`firstHighPulses: ${JSON.stringify(firstHighPulses)}`);
+
+    while (true) {
         if (buttonPressCount % 1000 === 0) {
             console.log(`======== Still going...pressing the button for the ${buttonPressCount + 1} time. ========`);
         }
@@ -62,15 +77,40 @@ const execute = () => {
         // Process the pulse queue
         while (!pulseQueue.isEmpty()) {
             const executedPulse = pulseQueue.execute();
-            if (executedPulse?.destination.id === 'rx') {
-                if (executedPulse.type === PulseType.Low) {
-                    rxHasReceivedLowPulse = true;
+            
+            if (executedPulse) {
+                console.log(`executedPulse of type ${executedPulse.type} from ${executedPulse.source.id} to ${executedPulse.destination.id}`);
+            }
+
+            if (executedPulse && (firstHighPulses[executedPulse.source.id] !== undefined) && (executedPulse.type === PulseType.High)) {
+                if (debug) {
+                    console.log(`The button was pressed ${buttonPressCount} times.`);
+                }
+
+                if (firstHighPulses[executedPulse.source.id] === -1) {
+                    firstHighPulses[executedPulse.source.id] = buttonPressCount;
                 }
             }
+
+            Object.keys(firstHighPulses).forEach((moduleId) => {
+                const m = moduleMap[moduleId];
+                console.log(`Module ${moduleId} has ${JSON.stringify(m.mostRecentReceivedPulses)}.`);
+            });
+
+            if (executedPulse && executedPulse.destination.id === 'rx') {
+                console.log(`RX received a pulse of ${executedPulse.type} from ${executedPulse.source.id}.`);
+            }
+        }
+
+        if (Object.values(firstHighPulses).every((value) => value !== -1)) {
+            console.log(`All modules have been in a good state, ready for LCM.`);
+            break;
         }
     }
 
-    console.log(`The button was pressed ${buttonPressCount} times.`);
+    const lcm = calculateLCM(Object.values(firstHighPulses));
+    
+    console.log(`The button was pressed ${lcm} times.`);
 };
 
 const parseLine = (line: string) => {
