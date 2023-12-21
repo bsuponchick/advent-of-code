@@ -64,8 +64,6 @@ const execute = () => {
         });
     }
 
-    console.log(`firstHighPulses: ${JSON.stringify(firstHighPulses)}`);
-
     while (true) {
         if (buttonPressCount % 1000 === 0) {
             console.log(`======== Still going...pressing the button for the ${buttonPressCount + 1} time. ========`);
