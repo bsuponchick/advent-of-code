@@ -77,10 +77,6 @@ const execute = () => {
         // Process the pulse queue
         while (!pulseQueue.isEmpty()) {
             const executedPulse = pulseQueue.execute();
-            
-            if (executedPulse) {
-                console.log(`executedPulse of type ${executedPulse.type} from ${executedPulse.source.id} to ${executedPulse.destination.id}`);
-            }
 
             if (executedPulse && (firstHighPulses[executedPulse.source.id] !== undefined) && (executedPulse.type === PulseType.High)) {
                 if (debug) {
@@ -90,15 +86,6 @@ const execute = () => {
                 if (firstHighPulses[executedPulse.source.id] === -1) {
                     firstHighPulses[executedPulse.source.id] = buttonPressCount;
                 }
-            }
-
-            Object.keys(firstHighPulses).forEach((moduleId) => {
-                const m = moduleMap[moduleId];
-                console.log(`Module ${moduleId} has ${JSON.stringify(m.mostRecentReceivedPulses)}.`);
-            });
-
-            if (executedPulse && executedPulse.destination.id === 'rx') {
-                console.log(`RX received a pulse of ${executedPulse.type} from ${executedPulse.source.id}.`);
             }
         }
 
