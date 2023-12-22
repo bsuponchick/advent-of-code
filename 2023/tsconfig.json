@@ -2,11 +2,11 @@
     "compilerOptions": {
       "module": "commonjs",
       "esModuleInterop": true,
-      "target": "es6",
+      "target": "ES2022",
       "moduleResolution": "node",
       "sourceMap": true,
-      "strict": true,
-      "noImplicitAny": false,
-      "lib": ["es6", "dom"],
+      // "strict": true,
+      // "noImplicitAny": false,
+      "lib": ["es2021"],
     }
   }
