@@ -23,6 +23,46 @@ describe('Day 22 - Part 1', () => {
                 expect(block.id).toBe('1,2,2');
             });
         });
+
+        describe(`reset`, () => {
+            test(`should reset the block to its starting position`, () => {
+                const block = new Block(1, 2, 3);
+                block.fall();
+
+                expect(block.x).toBe(1);
+                expect(block.y).toBe(2);
+                expect(block.z).toBe(2);
+                expect(block.id).toBe('1,2,2');
+
+                block.reset();
+                
+                expect(block.x).toBe(1);
+                expect(block.y).toBe(2);
+                expect(block.z).toBe(3);
+                expect(block.id).toBe('1,2,3');
+            });
+        });
+
+        describe(`updateDefaults`, () => {
+            test(`should update the starting position of the block`, () => {
+                const block = new Block(1, 2, 3);
+                block.fall();
+
+                expect(block.x).toBe(1);
+                expect(block.y).toBe(2);
+                expect(block.z).toBe(2);
+                expect(block.id).toBe('1,2,2');
+                expect(block.startingX).toBe(1);
+                expect(block.startingY).toBe(2);
+                expect(block.startingZ).toBe(3);
+
+                block.updateDefaults();
+                
+                expect(block.startingX).toBe(1);
+                expect(block.startingY).toBe(2);
+                expect(block.startingZ).toBe(2);
+            });
+        });
     });
 
     describe(`Brick`, () => {
@@ -153,6 +193,45 @@ describe('Day 22 - Part 1', () => {
 
                 expect(blockCache['1,2,3']).toBe(brick.blocks[0]);
                 expect(blockCache['1,2,4']).toBe(brick.blocks[1]);
+            });
+        });
+
+        describe(`reset`, () => {
+            test(`should reset all blocks to their starting positions`, () => {
+                const blockCache: { [id: string]: Block } = {};
+                const brick = new Brick('1,2,3~1,2,4', blockCache);
+
+                brick.fall();
+                brick.reset();
+
+                expect(brick.blocks[0].x).toBe(1);
+                expect(brick.blocks[0].y).toBe(2);
+                expect(brick.blocks[0].z).toBe(3);
+                expect(blockCache['1,2,3']).toBe(brick.blocks[0]);
+
+                expect(brick.blocks[1].x).toBe(1);
+                expect(brick.blocks[1].y).toBe(2);
+                expect(brick.blocks[1].z).toBe(4);
+                expect(blockCache['1,2,4']).toBe(brick.blocks[1]);
+            });
+        });
+
+        describe(`setDefaultPositions`, () => {
+            test(`should update the starting positions of all blocks`, () => {
+                const blockCache: { [id: string]: Block } = {};
+                const brick = new Brick('1,2,3~1,2,4', blockCache);
+
+                brick.fall();
+
+                brick.setDefaultPositions();
+
+                expect(brick.blocks[0].startingX).toBe(1);
+                expect(brick.blocks[0].startingY).toBe(2);
+                expect(brick.blocks[0].startingZ).toBe(2);
+
+                expect(brick.blocks[1].startingX).toBe(1);
+                expect(brick.blocks[1].startingY).toBe(2);
+                expect(brick.blocks[1].startingZ).toBe(3);
             });
         });
     });

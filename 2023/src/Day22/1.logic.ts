@@ -1,13 +1,22 @@
+import { v4 as uuidv4 } from 'uuid';
+
 export class Block {
     id: string;
     x: number;
     y: number;
     z: number;
+    startingX: number;
+    startingY: number;
+    startingZ: number;
 
     constructor(x: number, y: number, z: number) {
         this.x = x;
         this.y = y;
         this.z = z;
+        
+        this.startingX = x;
+        this.startingY = y;
+        this.startingZ = z;
 
         this.id = `${x},${y},${z}`;
     }
@@ -16,13 +25,30 @@ export class Block {
         this.z--;
         this.id = `${this.x},${this.y},${this.z}`;
     }
+
+    reset = () => {
+        this.x = this.startingX;
+        this.y = this.startingY;
+        this.z = this.startingZ;
+
+        this.id = `${this.x},${this.y},${this.z}`;
+    }
+
+    updateDefaults = () => {
+        this.startingX = this.x;
+        this.startingY = this.y;
+        this.startingZ = this.z;
+    }
 }
 
 export class Brick {
+    id: string;
     blocks: Block[] = [];
     blockCache: { [id: string]: Block };
 
     constructor(input: string, cache: { [id: string]: Block }) {
+        this.id = uuidv4();
+
         const [start, end] = input.split('~');
         const [x1, y1, z1] = start.split(',');
         const [x2, y2, z2] = end.split(',');
@@ -99,4 +125,23 @@ export class Brick {
             this.blockCache[block.id] = block;
         });
     }
+
+    reset = () => {
+        this.blocks.forEach((block) => {
+            block.reset();
+            this.blockCache[block.id] = block;
+        });
+    }
+
+    setDefaultPositions = () => {
+        this.blocks.forEach((block) => {
+            block.updateDefaults();
+        });
+    };
 }
+
+export const resetBlockCache = (cache: { [id: string]: Block }) => {
+    Object.keys(cache).forEach(key => {
+        delete cache[key];
+    });
+};
