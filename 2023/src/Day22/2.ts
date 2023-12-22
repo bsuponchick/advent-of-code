@@ -69,7 +69,9 @@ const execute = () => {
 
         countOfBricksThatWouldFall += brickIdsThatWouldFall.size;
 
-        console.log(`Disintegrating brick ${index} would cause ${brickIdsThatWouldFall.size} bricks to fall.`);
+        if (debug) {
+            console.log(`Disintegrating brick ${index} would cause ${brickIdsThatWouldFall.size} bricks to fall.`);
+        }
 
         resetBlockCache(blockCache);
         bricks.forEach(brick => brick.reset());
