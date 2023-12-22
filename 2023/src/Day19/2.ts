@@ -13,12 +13,12 @@ const execute = () => {
         workflows[workflow.id] = workflow;
     });
 
-    console.log(`There are ${Object.keys(workflows).length} workflows`);
+    console.log(`There are ${Object.keys(workflows).length} total workflows`);
 
     const entry = workflows['in'];
     const paths = entry.generatePathsToAccepted(workflows);
 
-    console.log(`There are ${paths.length} paths`);
+    console.log(`There are ${paths.length} paths to accepted`);
     paths.forEach((path, index) => {
         let pathString = '';
 
