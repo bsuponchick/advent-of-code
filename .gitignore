@@ -16,6 +16,7 @@
 # Ignore package manager directories
 /node_modules/
 /vendor/
+**/node_modules/
 
 # Ignore log files
 *.log
