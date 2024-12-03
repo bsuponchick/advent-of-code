@@ -1,16 +1,36 @@
+import { add } from './1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+const leftSide: number[] = [];
+const rightSide: number[] = [];
+const similarityScores: number[] = [];
 
 const execute = () => {
-    
+    leftSide.forEach((left) => {
+        let countOfOccurences = 0;
+
+        rightSide.forEach((right) => {
+            if (left === right) {
+                countOfOccurences++;
+            }
+        });
+
+        similarityScores.push(countOfOccurences * left);
+    });
+
+    const sumOfSimilarityScores = similarityScores.reduce(add, 0);
+
+    console.log(`The sum of the similarity scores is ${sumOfSimilarityScores}`);
 }
 
 const parseLine = (line: string) => {
-    message = line;
+    const parts = line.split('   ');
+   
+    leftSide.push(parseInt(parts[0]));
+    rightSide.push(parseInt(parts[1]));
 };
 
 var lineReader = require('readline').createInterface({
