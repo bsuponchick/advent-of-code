@@ -9,23 +9,23 @@ export class Report {
     }
 
     public determineIfSafe(): boolean {
-        console.log(`Testing id (${this.id}) with ${JSON.stringify(this.levels)}`);
+        //console.log(`Testing id (${this.id}) with ${JSON.stringify(this.levels)}`);
         const firstUnsafeIndex = this.determineFirstUnsafeIndex(this.levels);
         
         if (firstUnsafeIndex > -1) {
-            console.log(`Testing permutations to find any safe combination.`);
+            //console.log(`Testing permutations to find any safe combination.`);
 
             for (let i = 0; i < this.levels.length; i++) {
                 const splicedLevels = [...this.levels];
                 splicedLevels.splice(i, 1);
 
-                console.log(`Re-testing with ${JSON.stringify(splicedLevels)}`);
+                //console.log(`Re-testing with ${JSON.stringify(splicedLevels)}`);
                 const nextUnsafeIndex = this.determineFirstUnsafeIndex(splicedLevels);
 
                 if (nextUnsafeIndex > -1) {
-                    console.log(`Testing with ${JSON.stringify(splicedLevels)} failed.`);
+                    //console.log(`Testing with ${JSON.stringify(splicedLevels)} failed.`);
                 } else {
-                    console.log(`Testing with ${JSON.stringify(splicedLevels)} passed.`);
+                   // console.log(`Testing with ${JSON.stringify(splicedLevels)} passed.`);
                     return true;
                 }
             }
