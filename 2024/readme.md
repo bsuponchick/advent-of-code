@@ -11,11 +11,23 @@ This project uses ts-node to execute TypeScript commands directly from the comma
 
 `npx ts-node <Filename> <args>`
 
-For example, to execute problem one for Day1, navigate to the Day1 directory and execute:
+For example, to execute Day 1 problem 1, navigate to the Day1 directory and execute:
 
-`npx ts-node 1`
+`npx ts-node 1.1`
 
 This will result in problem 1 being executed.  
 
 # Testing
 Testing can be done via Jest.  In addition, the ability to pass test data to the execute function can be done using the --test argument.  Doing so will load data from test.txt instead of input.txt.
+
+All tests can be run using the command:
+
+`yarn run test`
+
+A single test file can be run using the command: 
+
+`npx yarn <<filename>>`
+
+For example, to execute the tests for Day 1 Problem 1, use the command:
+
+`npx jest 1.1.test`
