@@ -16,6 +16,10 @@ export class Wire {
         return this.value !== null;
     }
 
+    reset(): void {
+        this.value = null;
+    }
+
     print(): void {
         console.log(`${this.id}: ${this.value}`);
     }
@@ -26,6 +30,8 @@ export interface Gate {
     hasTriggered(): boolean;
     trigger(): void;
     print(): void;
+    reset(): void;
+    getOutput(): Wire;
 }
 
 export class AndGate implements Gate {
@@ -53,6 +59,10 @@ export class AndGate implements Gate {
         return this.triggered;
     }
 
+    getOutput(): Wire {
+        return this.output;
+    }
+
     trigger(): void {
         if (typeof this.input1 === 'number') {
             this.output.setValue((this.input1 & 0xFFFF) & (this.input2.value & 0xFFFF));
@@ -61,6 +71,10 @@ export class AndGate implements Gate {
         }
         
         this.triggered = true;
+    }
+
+    reset(): void {
+        this.triggered = false;
     }
 
     print(): void {
@@ -97,6 +111,10 @@ export class OrGate implements Gate {
         return this.triggered;
     }
 
+    getOutput(): Wire {
+        return this.output;
+    }
+
     trigger(): void {
         if (typeof this.input1 === 'number') {
             this.output.setValue((this.input1 & 0xFFFF) | (this.input2.value & 0xFFFF));
@@ -105,6 +123,10 @@ export class OrGate implements Gate {
         }
 
         this.triggered = true;
+    }
+
+    reset(): void {
+        this.triggered = false;
     }
 
     print(): void {
@@ -135,9 +157,17 @@ export class NotGate implements Gate {
         return this.triggered;
     }
 
+    getOutput(): Wire {
+        return this.output;
+    }
+
     trigger(): void {
         this.output.setValue(~this.input1.value & 0xFFFF);
         this.triggered = true;
+    }
+
+    reset(): void {
+        this.triggered = false;
     }
 
     print(): void {
@@ -166,9 +196,17 @@ export class LShiftGate implements Gate {
         return this.triggered;
     }
 
+    getOutput(): Wire {
+        return this.output;
+    }
+
     trigger(): void {
         this.output.setValue((this.input1.value << this.input2) & 0xFFFF);
         this.triggered = true;
+    }
+
+    reset(): void {
+        this.triggered = false;
     }
 
     print(): void {
@@ -197,9 +235,17 @@ export class RShiftGate implements Gate {
         return this.triggered;
     }
 
+    getOutput(): Wire {
+        return this.output;
+    }
+
     trigger(): void {
         this.output.setValue((this.input1.value >> this.input2) & 0xFFFF);
         this.triggered = true;
+    }
+
+    reset(): void {
+        this.triggered = false;
     }
 
     print(): void {
@@ -222,6 +268,10 @@ export class PassthroughGate implements Gate {
         return this.input1.hasValue();
     }
 
+    getOutput(): Wire {
+        return this.output;
+    }
+
     hasTriggered(): boolean {
         return this.triggered;
     }
@@ -231,7 +281,48 @@ export class PassthroughGate implements Gate {
         this.triggered = true;
     }
 
+    reset(): void {
+        this.triggered = false;
+    }
+
     print(): void {
         console.log(`PASSTHROUGH: ${this.input1.id}:${this.input1.value} -> ${this.output.id}:${this.output.value}`);
+    }
+}
+
+export class DirectAssignmentGate implements Gate {
+    input1: number;
+    output: Wire;
+    triggered: boolean;
+
+    constructor(input1: number, output: Wire) {
+        this.input1 = input1;
+        this.output = output;
+        this.triggered = false;
+    }
+
+    canTrigger(): boolean {
+        return this.input1 !== null;
+    }
+
+    getOutput(): Wire {
+        return this.output;
+    }
+
+    hasTriggered(): boolean {
+        return this.triggered;
+    }
+
+    trigger(): void {
+        this.output.setValue(this.input1);
+        this.triggered = true;
+    }
+
+    reset(): void {
+        this.triggered = false;
+    }
+
+    print(): void {
+        console.log(`DIRECT ASSIGNMENT: ${this.input1} -> ${this.output.id}:${this.output.value}`);
     }
 }
