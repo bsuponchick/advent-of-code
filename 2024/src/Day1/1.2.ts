@@ -1,4 +1,4 @@
-import { add } from './1.logic';
+import { add } from './1.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');

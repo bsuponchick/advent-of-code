@@ -1,4 +1,4 @@
-import { findValidInstructions, extractNumbers } from './2.logic';
+import { findValidInstructions, extractNumbers } from './3.2.logic';
 import { describe, expect, test } from '@jest/globals';
 
 describe('Day 3 - Part 2', () => {

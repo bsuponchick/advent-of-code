@@ -1,4 +1,4 @@
-import { Report } from './1.logic';
+import { Report } from './2.1.logic';
 import { describe, expect, test } from '@jest/globals';
 
 describe('Day 2 - Part 1', () => {

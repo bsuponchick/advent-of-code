@@ -1,4 +1,4 @@
-import { add, sortNumerics, calculateDistance } from './1.logic';
+import { add, sortNumerics, calculateDistance } from './1.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');

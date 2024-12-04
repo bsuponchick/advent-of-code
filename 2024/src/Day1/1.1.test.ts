@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { add, subtract, sortNumerics, calculateDistance } from './1.logic';
+import { add, subtract, sortNumerics, calculateDistance } from './1.1.logic';
 
 describe('Day 1 - Part 1', () => {
     describe(`When the add function is called...`, () => {

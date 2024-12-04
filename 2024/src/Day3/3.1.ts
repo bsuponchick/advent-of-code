@@ -1,4 +1,4 @@
-import { findValidInstructions, extractNumbers } from './1.logic';
+import { findValidInstructions, extractNumbers } from './3.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');

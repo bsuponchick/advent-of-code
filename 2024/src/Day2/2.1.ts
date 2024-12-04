@@ -1,4 +1,4 @@
-import { Report } from './1.logic';
+import { Report } from './2.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
