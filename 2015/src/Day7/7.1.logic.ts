@@ -65,9 +65,9 @@ export class AndGate implements Gate {
 
     print(): void {
         if (typeof this.input1 === 'number') {
-            console.log(`AND: ${this.input1} & ${this.input2.value} = ${this.output.value}`);
+            console.log(`AND: ${this.input1} & ${this.input2.id}:${this.input2.value} -> ${this.output.id}:${this.output.value}`);
         } else {
-            console.log(`AND: ${this.input1.value} & ${this.input2.value} = ${this.output.value}`);
+            console.log(`AND: ${this.input1.id}:${this.input1.value} & ${this.input2.id}:${this.input2.value} -> ${this.output.id}:${this.output.value}`);
         }   
     }
 }
@@ -109,9 +109,9 @@ export class OrGate implements Gate {
 
     print(): void {
         if (typeof this.input1 === 'number') {
-            console.log(`OR: ${this.input1} | ${this.input2.value} = ${this.output.value}`);
+            console.log(`OR: ${this.input1} | ${this.input2.id}:${this.input2.value} -> ${this.output.id}:${this.output.value}`);
         } else {
-            console.log(`OR: ${this.input1.value} | ${this.input2.value} = ${this.output.value}`);
+            console.log(`OR: ${this.input1.id}:${this.input1.value} | ${this.input2.id}:${this.input2.value} -> ${this.output.id}:${this.output.value}`);
         }
     }
 }
@@ -141,7 +141,7 @@ export class NotGate implements Gate {
     }
 
     print(): void {
-        console.log(`NOT: ~${this.input1.value} = ${this.output.value}`);
+        console.log(`NOT: ~${this.input1.id}:${this.input1.value} -> ${this.output.id}:${this.output.value}`);
     }
 }
 
@@ -172,7 +172,7 @@ export class LShiftGate implements Gate {
     }
 
     print(): void {
-        console.log(`LSHIFT: ${this.input1.value} << ${this.input2} = ${this.output.value}`);
+        console.log(`LSHIFT: ${this.input1.id}:${this.input1.value} << ${this.input2} -> ${this.output.id}:${this.output.value}`);
     }
 }
 
@@ -203,6 +203,35 @@ export class RShiftGate implements Gate {
     }
 
     print(): void {
-        console.log(`RSHIFT: ${this.input1.value} >> ${this.input2} = ${this.output.value}`);
+        console.log(`RSHIFT: ${this.input1.id}:${this.input1.value} >> ${this.input2} -> ${this.output.id}:${this.output.value}`);
+    }
+}
+
+export class PassthroughGate implements Gate {
+    input1: Wire;
+    output: Wire;
+    triggered: boolean;
+
+    constructor(input1: Wire, output: Wire) {
+        this.input1 = input1;
+        this.output = output;
+        this.triggered = false;
+    }
+
+    canTrigger(): boolean {
+        return this.input1.hasValue();
+    }
+
+    hasTriggered(): boolean {
+        return this.triggered;
+    }
+
+    trigger(): void {
+        this.output.setValue(this.input1.value);
+        this.triggered = true;
+    }
+
+    print(): void {
+        console.log(`PASSTHROUGH: ${this.input1.id}:${this.input1.value} -> ${this.output.id}:${this.output.value}`);
     }
 }

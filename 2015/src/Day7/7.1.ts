@@ -1,4 +1,4 @@
-import { Wire, AndGate, OrGate, NotGate, LShiftGate, RShiftGate, Gate } from './7.1.logic';
+import { Wire, AndGate, OrGate, NotGate, LShiftGate, RShiftGate, PassthroughGate, Gate } from './7.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
@@ -10,14 +10,18 @@ const gates: Gate[] = [];
 const execute = () => {
     for (let i = 0; i < gates.length; i++) {
         gates.forEach((gate) => {
-            if (debug) {
-                gate.print();
-            }
-            
-            if (gate.canTrigger() && !gate.hasTriggered()) {
-                gate.trigger();
+            if (gate.canTrigger()) {
+                if (gate.hasTriggered()) {
+                    console.log(`Gate has already triggered...`);
+                    gate.print();
+                } else {
+                    console.log(`Gate can trigger`);
+                    gate.print();
+                    gate.trigger();
+                }
             } else {
-                console.log(`Gate cannot trigger`);
+                console.log(`Gate cannot trigger yet...`);
+                gate.print();
             }
         });
     }
@@ -36,11 +40,6 @@ const parseLine = (line: string) => {
     const parts = line.split(' ');
 
     if (line.indexOf('AND') !== -1) {
-
-        if (!wires.has(parts[0])) {
-            wires.set(parts[0], new Wire(parts[0]));
-        }
-
         if (!wires.has(parts[2])) {
             wires.set(parts[2], new Wire(parts[2]));
         }
@@ -49,8 +48,17 @@ const parseLine = (line: string) => {
             wires.set(parts[4], new Wire(parts[4]));
         }
 
-        const gate = new AndGate(wires.get(parts[0]), wires.get(parts[2]), wires.get(parts[4]));
-        gates.push(gate);
+        if (Number.isNaN(parseInt(parts[0], 10))) {
+            if (!wires.has(parts[0])) {
+                wires.set(parts[0], new Wire(parts[0]));
+            }
+
+            const gate = new AndGate(wires.get(parts[0]), wires.get(parts[2]), wires.get(parts[4]));
+            gates.push(gate);
+        } else {
+            const gate = new AndGate(parseInt(parts[0], 10), wires.get(parts[2]), wires.get(parts[4]));
+            gates.push(gate);
+        }
     } else if (line.indexOf('OR') !== -1) {
         if (!wires.has(parts[0])) {
             wires.set(parts[0], new Wire(parts[0]));
@@ -106,7 +114,21 @@ const parseLine = (line: string) => {
         }
 
         const wire = wires.get(parts[2]);
-        wire.setValue(parseInt(parts[0], 10));
+
+        if (Number.isNaN(parseInt(parts[0], 10))) {
+            // This is a passthrough gate
+            console.log(`Passthrough gate found: ${parts[0]} -> ${parts[2]}`);
+            if (!wires.has(parts[0])) {
+                wires.set(parts[0], new Wire(parts[0]));
+            }
+
+            const gate = new PassthroughGate(wires.get(parts[0]), wire);
+            gates.push(gate);
+        } else {
+            // This is a direct assignment
+            console.log(`Direct assignment found: ${parts[0]} -> ${parts[2]}`);
+            wire.setValue(parseInt(parts[0], 10));
+        }
     }
 };
 
