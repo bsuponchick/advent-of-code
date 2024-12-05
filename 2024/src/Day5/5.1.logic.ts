@@ -17,7 +17,7 @@ export class PotentialUpdate {
 
     determineIfValid(rules: Rule[]): boolean {
         let valid = true;
-        
+
         rules.forEach((rule) => {
             let indexOfFirstPageNumber = this.pageNumbers.indexOf(rule.firstPageNumber);
             let indexOfSecondPageNumber = this.pageNumbers.indexOf(rule.secondPageNumber);
@@ -37,6 +37,38 @@ export class PotentialUpdate {
     getMiddlePageNumber(): number {
         const middleIndex = Math.floor(this.pageNumbers.length / 2);
         return this.pageNumbers[middleIndex];
+    }
+
+    reorderPageNumbers(rules: Rule[]): void {
+        let newPageNumbers: number[] = [];
+
+        let rulesThatApplyToPages = rules.filter((rule) => {
+            return this.pageNumbers.includes(rule.firstPageNumber) && this.pageNumbers.includes(rule.secondPageNumber);
+        });
+
+        let copyOfPageNumbers = [...this.pageNumbers];
+
+        while (newPageNumbers.length < this.pageNumbers.length) {
+            let nextPageNumber = this.findNextPageNumber(rulesThatApplyToPages, copyOfPageNumbers);
+            newPageNumbers.push(nextPageNumber);
+            copyOfPageNumbers = copyOfPageNumbers.filter((pageNumber) => pageNumber !== nextPageNumber);
+            rulesThatApplyToPages = rulesThatApplyToPages.filter((rule) => rule.firstPageNumber !== nextPageNumber);
+        }
+
+        this.pageNumbers = newPageNumbers;
+
+        console.log(`The proper order of this update is ${this.pageNumbers.join(',')}`);
+    }
+
+    findNextPageNumber(rules: Rule[], pageNumbers: number[]): number {
+        for (let i = 0; i < pageNumbers.length; i++) {
+            let countRulesWithPageNumberSecond = rules.filter((rule) => rule.secondPageNumber === pageNumbers[i]).length;
+            if (countRulesWithPageNumberSecond === 0) {
+                return pageNumbers[i];
+            }
+        }
+
+        return -1;
     }
 }
 
