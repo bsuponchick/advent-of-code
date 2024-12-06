@@ -97,7 +97,7 @@ export class Guard {
         switch (this.direction) {
             case '^':
                 if (this.y === 0) {
-                    if (this.map[this.y][this.x] === '.') {
+                    if (this.map[this.y][this.x] === '.' || this.map[this.y][this.x] === '^') {
                         this.map[this.y][this.x] = '^';
                     } else {
                         this.map[this.y][this.x] += '^';
@@ -111,7 +111,7 @@ export class Guard {
                 } else if (nextTile.indexOf('^') !== -1) {
                     throw new Error('The guard is moving to a tile that has already been visited.');
                 } else {
-                    if (this.map[this.y][this.x] === '.') {
+                    if (this.map[this.y][this.x] === '.' || this.map[this.y][this.x] === '^') {
                         this.map[this.y][this.x] = '^';
                     } else {
                         this.map[this.y][this.x] += '^';
@@ -122,7 +122,7 @@ export class Guard {
                 return true;
             case 'v':
                 if (this.y === this.map.length - 1) {
-                    if (this.map[this.y][this.x] === '.') {
+                    if (this.map[this.y][this.x] === '.' || this.map[this.y][this.x] === 'v') {
                         this.map[this.y][this.x] = 'v';
                     } else {
                         this.map[this.y][this.x] += 'v';
@@ -136,7 +136,7 @@ export class Guard {
                 } else if (nextTile.indexOf('v') !== -1) {
                     throw new Error('The guard is moving to a tile that has already been visited.');
                 } else {
-                    if (this.map[this.y][this.x] === '.') {
+                    if (this.map[this.y][this.x] === '.' || this.map[this.y][this.x] === 'v') {
                         this.map[this.y][this.x] = 'v';
                     } else {
                         this.map[this.y][this.x] += 'v';
@@ -147,7 +147,7 @@ export class Guard {
                 return true;
             case '<':
                 if (this.x === 0) {
-                    if (this.map[this.y][this.x] === '.') {
+                    if (this.map[this.y][this.x] === '.' || this.map[this.y][this.x] === '<') {
                         this.map[this.y][this.x] = '<';
                     } else {
                         this.map[this.y][this.x] += '<';
@@ -161,7 +161,7 @@ export class Guard {
                 } else if (nextTile.indexOf('<') !== -1) {
                     throw new Error('The guard is moving to a tile that has already been visited.');
                 } else {
-                    if (this.map[this.y][this.x] === '.') {
+                    if (this.map[this.y][this.x] === '.' || this.map[this.y][this.x] === '<') {
                         this.map[this.y][this.x] = '<';
                     } else {
                         this.map[this.y][this.x] += '<';
@@ -172,7 +172,7 @@ export class Guard {
                 return true;
             case '>':
                 if (this.x === this.map[0].length - 1) {
-                    if (this.map[this.y][this.x] === '.') {
+                    if (this.map[this.y][this.x] === '.' || this.map[this.y][this.x] === '>') {
                         this.map[this.y][this.x] = '>';
                     } else {
                         this.map[this.y][this.x] += '>';
@@ -186,7 +186,7 @@ export class Guard {
                 } else if (nextTile.indexOf('>') !== -1) {
                     throw new Error('The guard is moving to a tile that has already been visited.');
                 } else {
-                    if (this.map[this.y][this.x] === '.') {
+                    if (this.map[this.y][this.x] === '.' || this.map[this.y][this.x] === '>') {
                         this.map[this.y][this.x] = '>';
                     } else {
                         this.map[this.y][this.x] += '>';

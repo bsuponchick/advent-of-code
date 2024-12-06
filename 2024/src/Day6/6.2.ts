@@ -45,16 +45,16 @@ const execute = () => {
         const temporaryMap = map.map((row) => [...row]);
         temporaryMap[x][y] = 'O';
 
-        const guard = new Guard(temporaryMap);
+        const tempGuard = new Guard(temporaryMap);
 
         try {
-            while (guard.moveTwo()) {
+            while (tempGuard.moveTwo()) {
                 // Do nothing.
             }
         } catch (e) {
             if (debug) {
                 console.log(`Loop detected...`);
-                console.log(guard.map.map((row) => row.join('')).join('\n'));
+                console.log(tempGuard.map.map((row) => row.join('')).join('\n'));
                 console.log();
             }
             countOfPotentialObstructions++;

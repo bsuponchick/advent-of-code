@@ -21,7 +21,7 @@ describe('Day 6 - Part 2', () => {
                     const map = [['^', '.'], ['.', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(result).toBe(false);
                 });
@@ -30,7 +30,7 @@ describe('Day 6 - Part 2', () => {
                     const map = [['#', '.'], ['^', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(guard.direction).toBe('>');
                 });
@@ -39,7 +39,7 @@ describe('Day 6 - Part 2', () => {
                     const map = [['.', '.'], ['^', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(guard.x).toBe(0);
                     expect(guard.y).toBe(0);
@@ -49,9 +49,21 @@ describe('Day 6 - Part 2', () => {
                     const map = [['.', '.'], ['^', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(guard.map[1][0]).toBe('^');
+                });
+
+                test(`Then it should mark the tile the guard is moving from with a ^.`, () => {
+                    const map = [['.', '.'], ['^', '.']];
+                    const guard = new Guard(map);
+
+                    guard.map[1][0] = '<';
+
+                    const result = guard.moveTwo();
+                    guard.moveTwo();
+
+                    expect(guard.map[1][0]).toBe('<^');
                 });
             });
 
@@ -60,7 +72,7 @@ describe('Day 6 - Part 2', () => {
                     const map = [['.', '.'], ['.', 'v']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(result).toBe(false);
                 });
@@ -69,7 +81,7 @@ describe('Day 6 - Part 2', () => {
                     const map = [['v', '.'], ['#', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(guard.direction).toBe('<');
                 });
@@ -78,7 +90,7 @@ describe('Day 6 - Part 2', () => {
                     const map = [['v', '.'], ['.', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(guard.x).toBe(0);
                     expect(guard.y).toBe(1);
@@ -88,9 +100,21 @@ describe('Day 6 - Part 2', () => {
                     const map = [['v', '.'], ['.', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(guard.map[0][0]).toBe('v');
+                });
+
+                test(`Then it should mark the tile the guard is moving from with a v.`, () => {
+                    const map = [['v', '.'], ['.', '.']];
+                    const guard = new Guard(map);
+
+                    guard.map[1][0] = '<';
+
+                    const result = guard.moveTwo();
+                    guard.moveTwo();
+
+                    expect(guard.map[1][0]).toBe('<v');
                 });
             });
 
@@ -99,7 +123,7 @@ describe('Day 6 - Part 2', () => {
                     const map = [['<', '.'], ['.', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(result).toBe(false);
                 });
@@ -108,7 +132,7 @@ describe('Day 6 - Part 2', () => {
                     const map = [['#', '<'], ['.', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(guard.direction).toBe('^');
                 });
@@ -117,7 +141,7 @@ describe('Day 6 - Part 2', () => {
                     const map = [['.', '<'], ['.', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(guard.x).toBe(0);
                     expect(guard.y).toBe(0);
@@ -127,9 +151,21 @@ describe('Day 6 - Part 2', () => {
                     const map = [['.', '<'], ['.', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(guard.map[0][1]).toBe('<');
+                });
+
+                test(`Then it should mark the tile the guard is moving from with a <.`, () => {
+                    const map = [['.', '<'], ['.', '.']];
+                    const guard = new Guard(map);
+
+                    guard.map[0][0] = 'v';
+
+                    const result = guard.moveTwo();
+                    guard.moveTwo();
+
+                    expect(guard.map[0][0]).toBe('v<');
                 });
             });
 
@@ -138,7 +174,7 @@ describe('Day 6 - Part 2', () => {
                     const map = [['.', '>'], ['.', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(result).toBe(false);
                 });
@@ -147,7 +183,7 @@ describe('Day 6 - Part 2', () => {
                     const map = [['>', '#'], ['.', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(guard.direction).toBe('v');
                 });
@@ -156,7 +192,7 @@ describe('Day 6 - Part 2', () => {
                     const map = [['>', '.'], ['.', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(guard.x).toBe(1);
                     expect(guard.y).toBe(0);
@@ -166,9 +202,21 @@ describe('Day 6 - Part 2', () => {
                     const map = [['>', '.'], ['.', '.']];
                     const guard = new Guard(map);
 
-                    const result = guard.move();
+                    const result = guard.moveTwo();
 
                     expect(guard.map[0][0]).toBe('>');
+                });
+
+                test(`Then it should mark the tile the guard is moving from with a >.`, () => {
+                    const map = [['>', '.'], ['.', '.']];
+                    const guard = new Guard(map);
+
+                    guard.map[0][1] = 'v';
+
+                    const result = guard.moveTwo();
+                    guard.moveTwo();
+
+                    expect(guard.map[0][1]).toBe('v>');
                 });
             });
         });
