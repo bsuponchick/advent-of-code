@@ -108,6 +108,11 @@ export class Guard {
                 nextTile = this.map[this.y - 1][this.x];
                 if (nextTile === '#' || nextTile === 'O') {
                     this.direction = '>';
+                    if (this.map[this.y][this.x] === '.' || this.map[this.y][this.x] === '^') {
+                        this.map[this.y][this.x] = '^';
+                    } else {
+                        this.map[this.y][this.x] += '^';
+                    }
                 } else if (nextTile.indexOf('^') !== -1) {
                     throw new Error('The guard is moving to a tile that has already been visited.');
                 } else {
@@ -133,6 +138,11 @@ export class Guard {
                 nextTile = this.map[this.y + 1][this.x];
                 if (nextTile === '#' || nextTile === 'O') {
                     this.direction = '<';
+                    if (this.map[this.y][this.x] === '.' || this.map[this.y][this.x] === 'v') {
+                        this.map[this.y][this.x] = 'v';
+                    } else {
+                        this.map[this.y][this.x] += 'v';
+                    }
                 } else if (nextTile.indexOf('v') !== -1) {
                     throw new Error('The guard is moving to a tile that has already been visited.');
                 } else {
@@ -158,6 +168,11 @@ export class Guard {
                 nextTile = this.map[this.y][this.x - 1];
                 if (nextTile === '#' || nextTile === 'O') {
                     this.direction = '^';
+                    if (this.map[this.y][this.x] === '.' || this.map[this.y][this.x] === '<') {
+                        this.map[this.y][this.x] = '<';
+                    } else {
+                        this.map[this.y][this.x] += '<';
+                    }
                 } else if (nextTile.indexOf('<') !== -1) {
                     throw new Error('The guard is moving to a tile that has already been visited.');
                 } else {
@@ -183,6 +198,11 @@ export class Guard {
                 nextTile = this.map[this.y][this.x + 1];
                 if (nextTile === '#' || nextTile === 'O') {
                     this.direction = 'v';
+                    if (this.map[this.y][this.x] === '.' || this.map[this.y][this.x] === '>') {
+                        this.map[this.y][this.x] = '>';
+                    } else {
+                        this.map[this.y][this.x] += '>';
+                    }
                 } else if (nextTile.indexOf('>') !== -1) {
                     throw new Error('The guard is moving to a tile that has already been visited.');
                 } else {

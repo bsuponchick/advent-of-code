@@ -50,6 +50,9 @@ const execute = () => {
         try {
             while (tempGuard.moveTwo()) {
                 // Do nothing.
+                // if (debug) {
+                //     console.log(`Moving to ${tempGuard.x},${tempGuard.y}...`);
+                // }
             }
         } catch (e) {
             if (debug) {
