@@ -1,4 +1,3 @@
-import { count } from 'console';
 import { Node } from './8.1.logic';
 const args = process.argv;
 const debug = args.includes('--debug');

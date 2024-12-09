@@ -1,102 +1,252 @@
-export class TreeNode {
-    parent: TreeNode | null;
-    children: TreeNode[];
-    operator: string | null;
-    value: number;
-
-    constructor (value: number, operator: string | null) {
-        this.value = value;
-        this.operator = operator;
-        this.children = [];
-    }
-
-    populate (values: number[]): void {
-        if (values.length === 0) {
-            return;
-        }
-
-        const operators = ['+', '*', '||'];
-
-        const copyOfValues = [...values];
-        const value = copyOfValues.shift();
-
-        operators.forEach((operator) => {
-            const node = new TreeNode(value, operator);
-            this.children.push(node);
-            node.populate(copyOfValues);
-        });
-    }
-
-    addChild (child: TreeNode) {
-        child.setParent(this);
-        this.children.push(child);
-    }
-
-    setParent (parent: TreeNode) {
-        this.parent = parent;
-    }
-
-    evaluate (desiredResult: number, accumulator: number): boolean {
-        let currentValue = accumulator;
-
-        if (this.operator === '+') {
-            currentValue += this.value;
-        } else if (this.operator === '*') {
-            currentValue *= this.value;
-        } else if (this.operator === '||') {
-            currentValue = Number.parseInt(`${currentValue}${this.value}`, 10);
-        } else if (this.operator === null) {
-            currentValue = this.value;
-        }
-
-        if (this.children.length === 0) {
-            //console.log(`No more children, current value: ${currentValue}`);
-            return currentValue === desiredResult;
-        }
-
-        if (currentValue > desiredResult) {
-            return false;
-        }
-
-        for (let i = 0; i < this.children.length; i++) {
-            if (this.children[i].evaluate(desiredResult, currentValue)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
+interface Coordinate {
+    x: number;
+    y: number;
 }
 
-export class Equation {
-    outcome: number;
-    values: number[];
+export class Node {
+    symbol: string;
+    antiNodes: string[];
+    coordinate: Coordinate;
 
-    constructor (line: string) {
-        this.values = [];
-
-        this.parse(line);
+    constructor (symbol: string, coordinate: Coordinate) {
+        this.symbol = symbol;
+        this.coordinate = coordinate;
+        this.antiNodes = [];
     }
 
-    parse (line: string): void {
-        const parts = line.split(' ');
-        
-        parts.forEach((part, index) => {
-            if (index === 0) {
-                this.outcome = parseInt(part.slice(0, part.length - 1));
+    addAntiNode (node: string) {
+        if (!this.antiNodes.includes(node)) {
+            this.antiNodes.push(node);
+        }
+    }
+
+    hasAntiNode (): boolean {
+        return this.antiNodes.length > 0;
+    }
+
+    getAntiNodeCoordinates (otherNode: Node, bottomRightCoordinate: Coordinate): Coordinate[] {
+        const antiNodeCoordinates: Coordinate[] = [];
+
+        let diffX = Math.abs(this.coordinate.x - otherNode.coordinate.x);
+        let diffY = Math.abs(this.coordinate.y - otherNode.coordinate.y);
+
+        if (this.coordinate.x < otherNode.coordinate.x) {
+            if (this.coordinate.y < otherNode.coordinate.y) {
+                // Top left to lower right
+                let newX = this.coordinate.x;
+                let newY = this.coordinate.y;
+
+                while (newX >= 0 && newY >= 0) {
+                    newX = newX - diffX;
+                    newY = newY - diffY;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
+
+                newX = otherNode.coordinate.x;
+                newY = otherNode.coordinate.y;
+
+                while (newX <= bottomRightCoordinate.x && newY <= bottomRightCoordinate.y) {
+                    newX = newX + diffX;
+                    newY = newY + diffY;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
+            } else if (this.coordinate.y > otherNode.coordinate.y) {
+                // Lower left to top right
+                let newX = this.coordinate.x;
+                let newY = this.coordinate.y;
+
+                while (newX >= 0 && newY <= bottomRightCoordinate.y) {
+                    newX = newX - diffX;
+                    newY = newY + diffY;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
+
+                newX = otherNode.coordinate.x;
+                newY = otherNode.coordinate.y;
+
+                while (newX <= bottomRightCoordinate.x && newY >= 0) {
+                    newX = newX + diffX;
+                    newY = newY - diffY;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
             } else {
-                this.values.push(parseInt(part));
+                // Left to right
+
+                let newX = this.coordinate.x;
+                let newY = this.coordinate.y;
+
+                while (newX >= 0) {
+                    newX = newX - diffX;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
+
+                newX = otherNode.coordinate.x;
+                newY = otherNode.coordinate.y;
+
+                while (newX <= bottomRightCoordinate.x) {
+                    newX = newX + diffX;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
             }
-        });
-    }
+        } else if (this.coordinate.x > otherNode.coordinate.x) {
+            if (this.coordinate.y < otherNode.coordinate.y) {
+                // Top right to lower left
+                let newX = this.coordinate.x;
+                let newY = this.coordinate.y;
 
-    evaluate (): boolean {
-        const copyOfValues = [...this.values];
-        const rootValue = copyOfValues.shift();
+                while (newX <= bottomRightCoordinate.x && newY >= 0) {
+                    newX = newX + diffX;
+                    newY = newY - diffY;
 
-        const root = new TreeNode(rootValue, null);
-        root.populate(copyOfValues);
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
 
-        return root.evaluate(this.outcome, 0);
+                newX = otherNode.coordinate.x;
+                newY = otherNode.coordinate.y;
+
+                while (newX >= 0 && newY <= bottomRightCoordinate.y) {
+                    newX = newX - diffX;
+                    newY = newY + diffY;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
+            } else if (this.coordinate.y > otherNode.coordinate.y) {
+                // Lower right to top left
+                let newX = this.coordinate.x;
+                let newY = this.coordinate.y;
+
+                while (newX <= bottomRightCoordinate.x && newY <= bottomRightCoordinate.y) {
+                    newX = newX + diffX;
+                    newY = newY + diffY;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
+
+                newX = otherNode.coordinate.x;
+                newY = otherNode.coordinate.y;
+
+                while (newX >= 0 && newY >= 0) {
+                    newX = newX - diffX;
+                    newY = newY - diffY;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
+            } else {
+                // Right to left
+                let newX = this.coordinate.x;
+                let newY = this.coordinate.y;
+
+                while (newX <= bottomRightCoordinate.x) {
+                    newX = newX + diffX;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
+
+                newX = otherNode.coordinate.x;
+                newY = otherNode.coordinate.y;
+
+                while (newX >= 0) {
+                    newX = newX - diffX;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
+            }
+        } else {
+            if (this.coordinate.y < otherNode.coordinate.y) {
+                // Top to bottom
+                let newX = this.coordinate.x;
+                let newY = this.coordinate.y;
+
+                while (newY >= 0) {
+                    newY = newY - diffY;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
+
+                newY = otherNode.coordinate.y;
+
+                while (newY <= bottomRightCoordinate.y) {
+                    newY = newY + diffY;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
+            } else if (this.coordinate.y > otherNode.coordinate.y) {
+                // Bottom to top
+                let newX = this.coordinate.x;
+                let newY = this.coordinate.y;
+
+                while (newY <= bottomRightCoordinate.y) {
+                    newY = newY + diffY;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
+
+                newY = otherNode.coordinate.y;
+
+                while (newY >= 0) {
+                    newY = newY - diffY;
+
+                    antiNodeCoordinates.push({
+                        x: newX,
+                        y: newY
+                    });
+                }
+            } else {
+                // Same coordinates
+            }
+        }
+
+        return antiNodeCoordinates
     }
 }
