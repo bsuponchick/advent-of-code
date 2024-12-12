@@ -133,16 +133,16 @@ export class Region {
             });
         });
 
-        // Determine which of the values in the map are odd, those are vertices
+        // Find the vertices, this equals the number of sides of the region
         let vertices = 0;
 
-        // for (let count of map.values()) {
         const keys = Array.from(map.keys());
 
         keys.forEach((key) => {
             let count = map.get(key);
 
             if (count % 2 !== 0) {
+                // Any plot vertex with an odd count is a vertex of the region
                 console.log(`Vertex at key: ${key}, Count: ${count}`);
                 vertices++;
             } else if (count === 2) {                
