@@ -51,9 +51,9 @@ describe('Graph Tests', () => {
 
     test('getNode', () => {
         const graph = new Graph();
-        const node = new Node({id: 1});
+        const node = new Node({id: `1`});
         graph.addNode(node);
-        expect(graph.getNode(1)).toBe(node);
+        expect(graph.getNode(`1`)).toBe(node);
     });
 
     test('addNode', () => {

@@ -9,11 +9,11 @@ export class Node {
         this.visited = false;
     }
 
-    addEdge(edge) {
+    addEdge(edge: Edge) {
         this.edges.push(edge);
     }
 
-    removeEdge(edge) {
+    removeEdge(edge: Edge) {
         this.edges = this.edges.filter((e) => e !== edge);
     }
 
@@ -26,12 +26,18 @@ export class Node {
     }
 }
 
+interface EdgeConstructor {
+    start: Node;
+    end: Node;
+    weight: number;
+}
+
 export class Edge {
     start: Node;
     end: Node;
     weight: number;
 
-    constructor({start, end, weight}) {
+    constructor({start, end, weight}: EdgeConstructor) {
         this.start = start;
         this.end = end;
         this.weight = weight;
@@ -47,28 +53,28 @@ export class Graph {
         this.edges = [];
     }
 
-    getNode(id) {
+    getNode(id: string) {
         return this.nodes.find((node) => node.id === id);
     }
 
-    addNode(node) {
+    addNode(node: Node) {
         this.nodes.push(node);
     }
 
-    removeNode(node) {
+    removeNode(node: Node) {
         this.nodes = this.nodes.filter((n) => n !== node);
         node.edges.forEach((edge) => {
             this.removeEdge(edge);
         });
     }
 
-    addEdge(edge) {
+    addEdge(edge: Edge) {
         this.edges.push(edge);
         edge.start.addEdge(edge);
         edge.end.addEdge(edge);
     }
 
-    removeEdge(edge) {
+    removeEdge(edge: Edge) {
         this.edges = this.edges.filter((e) => e !== edge);
         edge.start.removeEdge(edge);
         edge.end.removeEdge(edge);
@@ -107,13 +113,13 @@ export class Graph {
                 const alt = distance[current.id] + edge.weight;
     
                 if (alt < distance[neighbor.id]) {
-                    console.log(`Setting previous of ${neighbor.id} to ${current.id}`);
-                    console.log(`Setting distance of ${neighbor.id} to ${alt}`);
-                    if (neighbor.id === start.id) {
-                        console.log(`-----------Neighbor is start-----------`);
-                    } else if (neighbor.id === end.id) {
-                        console.log(`============Neighbor is end============`);
-                    }
+                    // console.log(`Setting previous of ${neighbor.id} to ${current.id}`);
+                    // console.log(`Setting distance of ${neighbor.id} to ${alt}`);
+                    // if (neighbor.id === start.id) {
+                    //     console.log(`-----------Neighbor is start-----------`);
+                    // } else if (neighbor.id === end.id) {
+                    //     console.log(`============Neighbor is end============`);
+                    // }
                     distance[neighbor.id] = alt;
                     previous[neighbor.id] = current;
                 }
@@ -127,7 +133,7 @@ export class Graph {
         console.log(`End: ${end.id}`);
         
         while (current !== start) {
-            console.log(`Trying to push ${current.id}`);
+            // console.log(`Trying to push ${current.id}`);
             path.push(current);
             current = previous[current.id];
         }
