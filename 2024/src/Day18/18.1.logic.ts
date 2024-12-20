@@ -94,7 +94,8 @@ export class MemorySpace {
     }
 
     reset() {
-        this.graph.reset();
+        this.graph = new Graph();
+        this.initialize();
     }
 
     print() {

@@ -113,13 +113,6 @@ export class Graph {
                 const alt = distance[current.id] + edge.weight;
     
                 if (alt < distance[neighbor.id]) {
-                    // console.log(`Setting previous of ${neighbor.id} to ${current.id}`);
-                    // console.log(`Setting distance of ${neighbor.id} to ${alt}`);
-                    // if (neighbor.id === start.id) {
-                    //     console.log(`-----------Neighbor is start-----------`);
-                    // } else if (neighbor.id === end.id) {
-                    //     console.log(`============Neighbor is end============`);
-                    // }
                     distance[neighbor.id] = alt;
                     previous[neighbor.id] = current;
                 }
@@ -139,6 +132,10 @@ export class Graph {
         }
     
         path.push(start);
+
+        path.forEach((node) => {
+            node.visit();
+        });
     
         return {
             distance: distance[end.id],
