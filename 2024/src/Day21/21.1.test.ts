@@ -1,4 +1,4 @@
-import { NumericKeyPad } from './21.1.logic';
+import { NumericKeyPad, DirectionalKeypad } from './21.1.logic';
 import { describe, expect, test } from '@jest/globals';
 
 describe('Day 21 - Part 1', () => {
@@ -28,32 +28,68 @@ describe('Day 21 - Part 1', () => {
             });
         });
 
-        describe(`determineNumberOfStepsToGetToNode`, () => {
-            test(`should return the number of steps to get to the 1 key from the action key`, () => {
-                const numericKeyPad = new NumericKeyPad();
-                const steps = numericKeyPad.determineNumberOfStepsToGetToNode('1');
-                expect(steps).toBe(3);
-            });
-
-            test(`should return the number of steps to get to the 9 key from the action key`, () => {
-                const numericKeyPad = new NumericKeyPad();
-                const steps = numericKeyPad.determineNumberOfStepsToGetToNode('9');
-                expect(steps).toBe(3);
-            });
-
-            test(`should return the number of steps to get to the action key from the 4 key`, () => {
-                const numericKeyPad = new NumericKeyPad();
-                numericKeyPad.setCurrentNode('4');
-                const steps = numericKeyPad.determineNumberOfStepsToGetToNode('A');
-                expect(steps).toBe(4);
-            });
-        });
-
         describe(`determinePathToNode`, () => {
             test(`should return the path to the 1 key from the action key`, () => {
                 const numericKeyPad = new NumericKeyPad();
                 const path = numericKeyPad.determinePathToNode('1');
                 expect(path).toEqual(expect.arrayContaining(['^', '<', '<']));
+            });
+        });
+
+        describe(`determinePathToSequence`, () => {
+            test(`should return the proper path given the sample input`, () => {
+                const numericKeyPad = new NumericKeyPad();
+                const path = numericKeyPad.determinePathToSequence('029A');
+                expect(path).toEqual(expect.arrayContaining(['<', 'A', '^', 'A', '>', '^', '^', 'A', 'v', 'v', 'v', 'A']));
+            });
+        });
+    });
+
+    describe(`DirectionalKeypad`, () => {
+        describe(`constructor`, () => {
+            test(`should populate the graph with the correct number of nodes`, () => {
+                const directionalKeypad = new DirectionalKeypad();
+                expect(directionalKeypad.graph.nodes.length).toBe(5);
+            });
+
+            test(`should populate the graph with the correct number of edges`, () => {
+                const directionalKeypad = new DirectionalKeypad();
+                expect(directionalKeypad.graph.edges.length).toBe(5);
+            });
+
+            test(`should set the current node to the action node`, () => {
+                const directionalKeypad = new DirectionalKeypad();
+                expect(directionalKeypad.currentNode.id).toBe('A');
+            });
+        });
+
+        describe(`setCurrentNode`, () => {
+            test(`should set the current node to the node with the given id`, () => {
+                const directionalKeypad = new DirectionalKeypad();
+                directionalKeypad.setCurrentNode('v');
+                expect(directionalKeypad.currentNode.id).toBe('v');
+            });
+        });
+
+        describe(`determinePathToNode`, () => {
+            test(`should return the path to the v key from the action key`, () => {
+                const directionalKeypad = new DirectionalKeypad();
+                const path = directionalKeypad.determinePathToNode('v');
+                expect(path).toEqual(expect.arrayContaining(['<', 'v']));
+            });
+        });
+
+        describe(`determinePathToSequence`, () => {
+            test(`should return the proper path given the sample input`, () => {
+                const directionalKeypad = new DirectionalKeypad();
+                const path = directionalKeypad.determinePathToSequence('<A^A>^^AvvvA');
+                expect(path).toEqual(expect.arrayContaining(['v', '<', '<', 'A', '>', '>', '^', 'A', '<', 'A', '>', 'A', 'v', 'A', '<', '^', 'A', 'A', '>', 'A', '<', 'v', 'A', 'A', 'A', '>', '^', 'A']));
+            });
+
+            test('should return the proper path for the larger sample input', () => {
+                const directionalKeypad = new DirectionalKeypad();
+                const path = directionalKeypad.determinePathToSequence('v<<A>>^A<A>AvA<^AA>A<vAAA>^A');
+                expect(path).toEqual(expect.arrayContaining('<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A'.split('')));
             });
         });
     });

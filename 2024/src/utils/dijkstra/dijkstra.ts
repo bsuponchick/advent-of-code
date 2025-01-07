@@ -122,8 +122,8 @@ export class Graph {
         const path: Node[] = [];
         let current: Node = end;
     
-        console.log(`Start: ${start.id}`);
-        console.log(`End: ${end.id}`);
+        //console.log(`Start: ${start.id}`);
+        //console.log(`End: ${end.id}`);
         
         while (current !== start) {
             // console.log(`Trying to push ${current.id}`);
