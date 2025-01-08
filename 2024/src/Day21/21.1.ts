@@ -14,18 +14,34 @@ const execute = () => {
     let sumOfComplexities = 0;
 
     sequences.forEach((sequence) => {
-        const numericPath = numericKeypad.determinePathToSequence(sequence);
-        const directionalKeypadOnePath = directionalKeypadOne.determinePathToSequence(numericPath.join(''));
-        const directionalKeypadTwoPath = directionalKeypadTwo.determinePathToSequence(directionalKeypadOnePath.join(''));
+        let shortestPathLength = Number.MAX_SAFE_INTEGER;
+        let shortestPath = '';
 
-        const lengthOfDirectionalKeypadTwoPath = directionalKeypadTwoPath.length;
+        const numericPaths = numericKeypad.determineShortestPathsForSequence(sequence);
+
+        numericPaths.forEach((path) => {
+            const directionalKeypadOnePaths = directionalKeypadOne.determineShortestPathsForSequence(path);
+
+            directionalKeypadOnePaths.forEach((d1path) => {
+                const directionalKeypadTwoPaths = directionalKeypadTwo.determineShortestPathsForSequence(d1path);
+
+                directionalKeypadTwoPaths.forEach((d2path) => {
+                    if (d2path.length < shortestPathLength) {
+                        shortestPathLength = d2path.length;
+                        shortestPath = d2path;
+                    }
+                });
+            });
+        });
+
+        const lengthOfDirectionalKeypadTwoPath = shortestPathLength;
         const numericPartOfSequence = Number.parseInt(sequence.replace('A', ''), 10);
         const complexityScore = lengthOfDirectionalKeypadTwoPath * numericPartOfSequence;
 
         if (debug) {
-            console.log(`${directionalKeypadTwoPath.join('')}`);
-            console.log(`${directionalKeypadOnePath.join('')}`);
-            console.log(`${numericPath.join('')}`);
+            console.log(`${shortestPath}`);
+            // console.log(`${directionalKeypadOnePath}`);
+            // console.log(`${numericPath}`);
             console.log(`${sequence}`);
             console.log(`Numeric Part of Sequence: ${numericPartOfSequence}`);
             console.log(`Length of Directional Keypad Two Path: ${lengthOfDirectionalKeypadTwoPath}`);
