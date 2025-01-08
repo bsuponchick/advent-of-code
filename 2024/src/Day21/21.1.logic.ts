@@ -1,5 +1,19 @@
 import { Node, Edge, Graph } from '../utils/dijkstra/dijkstra';
 
+export const stepComparator = (a: string, b: string): number =>{
+    const priorities = ['v', '^', '<', '>', 'A'];
+
+    if (a === b) {
+        return 0;
+    }
+
+    if (priorities.indexOf(a) < priorities.indexOf(b)) {
+        return -1;
+    } else {
+        return 1;
+    }
+}
+
 export class NumericKeyPad {
     currentNode: Node;
     graph: Graph;
@@ -85,7 +99,7 @@ export class NumericKeyPad {
             });
         }
 
-        return directions;
+        return directions.sort(stepComparator);;
     }
 
     determineStepToNode(startingId: string, targetId: string): string {
@@ -284,7 +298,7 @@ export class DirectionalKeypad {
             });
         }
 
-        return directions;
+        return directions.sort(stepComparator);
     }
 
     determineStepToNode(startingId: string, targetId: string): string {
@@ -346,9 +360,10 @@ export class DirectionalKeypad {
 
         charactersInSequence.forEach((character) => {
             path = path.concat(this.determinePathToNode(character));
-            this.setCurrentNode(character);
             // Add in the needed Action step in between paths
             path.push('A');
+
+            this.setCurrentNode(character);
         });
 
         return path;

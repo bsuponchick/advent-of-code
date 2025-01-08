@@ -1,4 +1,4 @@
-import { NumericKeyPad, DirectionalKeypad } from './21.1.logic';
+import { NumericKeyPad, DirectionalKeypad, stepComparator } from './21.1.logic';
 import { describe, expect, test } from '@jest/globals';
 
 describe('Day 21 - Part 1', () => {
@@ -91,6 +91,20 @@ describe('Day 21 - Part 1', () => {
                 const path = directionalKeypad.determinePathToSequence('v<<A>>^A<A>AvA<^AA>A<vAAA>^A');
                 expect(path).toEqual(expect.arrayContaining('<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A'.split('')));
             });
+        });
+    });
+
+    describe(`stepComparator`, () => {
+        test(`should properly sort the steps <<v to be v<<`, () => {
+            const steps = ['<', '<', 'v'];
+            steps.sort(stepComparator);
+            expect(steps).toEqual(expect.arrayContaining(['v', '<', '<']));
+        });
+
+        test(`should properly sort the steps ^<<^ to be ^^<<`, () => {
+            const steps = ['^', '<', '<', '^'];
+            steps.sort(stepComparator);
+            expect(steps).toEqual(expect.arrayContaining(['^', '^', '<', '<']));
         });
     });
 });
