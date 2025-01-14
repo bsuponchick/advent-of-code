@@ -10,8 +10,12 @@ const execute = () => {
    let sumOfFinalSecrets: bigint = 0n;
    let evolutionCache: Map<bigint, bigint> = new Map();
 
-    secrets.forEach((secret) => {
-         sumOfFinalSecrets += getXthEvolution(secret, 2000, evolutionCache);
+    secrets.forEach((secret, i) => {
+        sumOfFinalSecrets += getXthEvolution(secret, 2000, evolutionCache);
+
+        if (debug) {
+            console.log(`The sum of the secrets after ${i + 1} evolutions is ${sumOfFinalSecrets}`);
+        }
     });
 
     console.log(`The sum of the final secrets is ${sumOfFinalSecrets}`);

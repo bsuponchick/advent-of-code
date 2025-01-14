@@ -35,5 +35,5 @@ export const getXthEvolution = (secret: bigint, x: number, cache: Map<bigint, bi
         }
     }
 
-    return nextSecret;
+    return currentSecret;
 }
