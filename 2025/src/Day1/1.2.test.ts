@@ -1,201 +1,102 @@
 import { describe, expect, test } from '@jest/globals';
-import { Lock } from './1.2.logic';
+import { turnLeft, turnRight } from './1.2.logic';
 
-describe('Day 0 - Part 2', () => {
-    describe(`Lock`, () => {
-        describe(`Constructor`, () => {
-            test(`should create a lock with the correct position, min, and max`, () => {
-                const lock = new Lock({
-                    position: 1,
-                    min: 0,
-                    max: 10,
-                    goal: 0,
-                });
+describe('Day 1 - Part 2', () => {
+    describe(`When the turnLeft function is called...`, () => {
+        test(`It should return position 1, goals 0 when the start is 50 and the amount is less than 50`, () => {
+            expect(turnLeft({ start: 50, amount: 49 })).toEqual({ position: 1, goals: 0 });
+        });
 
-                expect(lock.position).toBe(1);
-                expect(lock.min).toBe(0);
-                expect(lock.max).toBe(10);
-            });
+        test(`It should return position 0, goals 1 when the start is 50 and the amount is 50`, () => {
+            expect(turnLeft({ start: 50, amount: 50 })).toEqual({ position: 0, goals: 1 });
+        });
+
+        test(`It should return position 99, goals 1 when the start is 50 and the amount is 51`, () => {
+            expect(turnLeft({ start: 50, amount: 51 })).toEqual({ position: 99, goals: 1 });
+        });
+
+        test(`It should return position 98, goals 1 when the start is 50 and the amount is 52`, () => {
+            expect(turnLeft({ start: 50, amount: 52 })).toEqual({ position: 98, goals: 1 });
+        });
+
+        test(`It should return position 50, goals 1 when the start is 50 and the amount is 100`, () => {
+            expect(turnLeft({ start: 50, amount: 100 })).toEqual({ position: 50, goals: 1 });
+        });
+
+        test(`It should return position 99, goals 1 when the start is 50 and the amount is 101`, () => {
+            expect(turnLeft({ start: 50, amount: 101 })).toEqual({ position: 49, goals: 1 });
+        });
+
+        test(`It should return position 50, goals 10 when the start is 50 and the amount is 1000`, () => {
+            expect(turnLeft({ start: 50, amount: 1000 })).toEqual({ position: 50, goals: 10 });
         });
     });
 
-    describe(`turnLeft`, () => {
-        test(`should turn the lock left by the given amount`, () => {
-            const lock = new Lock({
-                position: 1,
-                min: 0,
-                max: 10,
-                goal: 0,
-            });
-            const goals = lock.turnLeft(2);
-            expect(lock.position).toBe(10);
-            expect(goals).toBe(1);
+    describe(`When the turnRight function is called...`, () => {
+        test(`It should return position 51, goals 0 when the start is 50 and the amount is less than 50`, () => {
+            expect(turnRight({ start: 50, amount: 1 })).toEqual({ position: 51, goals: 0 });
         });
 
-        test(`should wrap around the lock if the position is less than the min`, () => {
-            const lock = new Lock({
-                position: 0,
-                min: 0,
-                max: 10,
-                goal: 0,
-            });
-            let goals = lock.turnLeft(2);
-            expect(lock.position).toBe(9);
-            expect(goals).toBe(0);
+        test(`It should return position 99, goals 0 when the start is 50 and the amount is 49`, () => {
+            expect(turnRight({ start: 50, amount: 49 })).toEqual({ position: 99, goals: 0 });
         });
 
-        test(`should not wrap around the lock if the resulting position is equal to the min`, () => {
-            const lock = new Lock({
-                position: 2,
-                min: 0,
-                max: 10,
-                goal: 0,
-            });
-            let goals = lock.turnLeft(2);
-            expect(lock.position).toBe(0);
-            expect(goals).toBe(1);
+        test(`It should return position 0, goals 1 when the start is 50 and the amount is 50`, () => {
+            expect(turnRight({ start: 50, amount: 50 })).toEqual({ position: 0, goals: 1 });
         });
 
-        test(`should not wrap around the lock if the position is between the min and max`, () => {
-            const lock = new Lock({
-                position: 5,
-                min: 0,
-                max: 10,
-                goal: 0,
-            });
-            let goals = lock.turnLeft(2);
-            expect(lock.position).toBe(3);
-            expect(goals).toBe(0);
+        test(`It should return position 1, goals 1 when the start is 50 and the amount is 51`, () => {
+            expect(turnRight({ start: 50, amount: 51 })).toEqual({ position: 1, goals: 1 });
         });
 
-        test(`should return the number of times the lock reached the goal while wrapping around`, () => {
-            const lock = new Lock({
-                position: 0,
-                min: 0,
-                max: 10,
-                goal: 0,
-            });
-            expect(lock.turnLeft(2)).toBe(0);
-        });
-        
-        test(`should return the number of times the lock reached the goal while wrapping around more than once`, () => {
-            const lock = new Lock({
-                position: 0,
-                min: 0,
-                max: 10,
-                goal: 0,
-            });
-            expect(lock.turnLeft(22)).toBe(2);
+        test(`It should return position 51, goals 1 when the start is 50 and the amount is 101`, () => {
+            expect(turnRight({ start: 50, amount: 101 })).toEqual({ position: 51, goals: 1 });
         });
 
-        test(`should return 0 if the lock did not reach the goal while wrapping around`, () => {
-            const lock = new Lock({
-                position: 3,
-                min: 0,
-                max: 10,
-                goal: 0,
-            });
-            expect(lock.turnLeft(2)).toBe(0);
-        });
-
-        test(`should return 10 if the lock starts at 50 and gets L1000`, () => {
-            const lock = new Lock({
-                position: 50,
-                min: 0,
-                max: 99,
-                goal: 0,
-            });
-            expect(lock.turnLeft(1000)).toBe(10);
+        test(`It should return position 50, goals 10 when the start is 50 and the amount is 1000`, () => {
+            expect(turnRight({ start: 50, amount: 1000 })).toEqual({ position: 50, goals: 10 });
         });
     });
 
-    describe(`turnRight`, () => {
-        test(`should turn the lock right by the given amount`, () => {
-            const lock = new Lock({
-                position: 1,
-                min: 0,
-                max: 10,
-                goal: 0,
-            });
-            let goals = lock.turnRight(2);
-            expect(lock.position).toBe(3);
-            expect(goals).toBe(0);
+    describe(`When the test input is evaluated...`, () => {
+        test(`It should return position 82, goals 1 when the start is 50 and the amount is 68`, () => {
+            expect(turnLeft({ start: 50, amount: 68 })).toEqual({ position: 82, goals: 1 });
         });
 
-        test(`should wrap around the lock if the position is greater than the max`, () => {
-            const lock = new Lock({
-                position: 10,
-                min: 0,
-                max: 10,
-                goal: 0,
-            });
-            let goals =lock.turnRight(2);
-            expect(lock.position).toBe(1);
-            expect(goals).toBe(1);
+        test(`It should return position 52, goals 0 when the start is 82 and the amount is 30`, () => {
+            expect(turnLeft({ start: 82, amount: 30 })).toEqual({ position: 52, goals: 0 });
         });
 
-        test(`should not wrap around the lock if the resulting position is equal to the max`, () => {
-            const lock = new Lock({
-                position: 8,
-                min: 0,
-                max: 10,
-                goal: 0,
-            });
-            let goals = lock.turnRight(2);
-            expect(lock.position).toBe(10);
-            expect(goals).toBe(0);
+        test(`It should return position 0, goals 1 when the start is 52 and the amount is 48`, () => {
+            expect(turnRight({ start: 52, amount: 48 })).toEqual({ position: 0, goals: 1 });
         });
 
-        test(`should return the number of times the lock reached the goal while wrapping around`, () => {
-            const lock = new Lock({
-                position: 10,
-                min: 0,
-                max: 10,
-                goal: 0,
-            });
-            expect(lock.turnRight(2)).toBe(1);
+        test(`It should return position 95, goals 0 when the start is 0 and the amount is 5`, () => {
+            expect(turnLeft({ start: 0, amount: 5 })).toEqual({ position: 95, goals: 0 });
         });
 
-        test(`should return the number of times the lock reached the goal while wrapping around more than once`, () => {
-            const lock = new Lock({
-                position: 0,
-                min: 0,
-                max: 10,
-                goal: 0,
-            });
-            expect(lock.turnRight(22)).toBe(2);
+        test(`It should return position 55, goals 1 when the start is 95 and the amount is 60`, () => {
+            expect(turnRight({ start: 95, amount: 60 })).toEqual({ position: 55, goals: 1 });
         });
 
-        test(`should return 0 if the lock did not reach the goal while wrapping around`, () => {
-            const lock = new Lock({
-                position: 1,
-                min: 0,
-                max: 10,
-                goal: 0,
-            });
-            expect(lock.turnRight(2)).toBe(0);
+        test(`It should return position 0, goals 1 when the start is 55 and the amount is 55`, () => {
+            expect(turnLeft({ start: 55, amount: 55 })).toEqual({ position: 0, goals: 1 });
         });
 
-        test(`should return 10 if the lock starts at 50 and gets R1000`, () => {
-            const lock = new Lock({
-                position: 50,
-                min: 0,
-                max: 99,
-                goal: 0,
-            });
-            expect(lock.turnRight(1000)).toBe(10);
+        test(`It should return position 99, goals 0 when the start is 0 and the amount is 1`, () => {
+            expect(turnLeft({ start: 0, amount: 1 })).toEqual({ position: 99, goals: 0 });
         });
-    });
 
-    describe(`isGoal`, () => {
-        test(`should return true when the position is equal to the goal`, () => {
-            const lock = new Lock({
-                position: 0,
-                min: 0,
-                max: 10,
-                goal: 0,
-            });
-            expect(lock.isGoal()).toBe(true);
+        test(`It should return position 0, goals 1 when the start is 99 and the amount is 99`, () => {
+            expect(turnLeft({ start: 99, amount: 99 })).toEqual({ position: 0, goals: 1 });
+        });
+
+        test(`It should return position 14, goals 0 when the start is 0 and the amount is 14`, () =>  {
+            expect(turnRight({ start: 0, amount: 14 })).toEqual({ position: 14, goals: 0 });
+        });
+
+        test(`It should return position 32, goals 1 when the start is 14 and the amount is 82`, () => {
+            expect(turnLeft({ start: 14, amount: 82 })).toEqual({ position: 32, goals: 1 });
         });
     });
 });

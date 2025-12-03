@@ -1,34 +1,33 @@
-import { Lock } from './1.2.logic';
+import { turnLeft, turnRight } from './1.2.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
 let messages: string[] = [];
-let countGoalReached = 0;
 
 const execute = () => {
-    const lock = new Lock({
-        position: 50,
-        min: 0,
-        max: 99,
-        goal: 0
-    });
+    let goalsReached = 0;
+    let currentPosition = 50;
 
     messages.forEach((message) => {
         let direction = message.startsWith('L') ? 'left' : 'right';
         let amount = Number.parseInt(message.slice(1), 10);
+        let turnResult: { position: number, goals: number };
 
         if (amount > 0) {
             if (direction === 'left') {
-                countGoalReached += lock.turnLeft(amount);
+                turnResult = turnLeft({ start: currentPosition, amount});
             } else {
-                countGoalReached += lock.turnRight(amount);
+                turnResult = turnRight({ start: currentPosition, amount});
             }
+
+            goalsReached += turnResult.goals;
+            currentPosition = turnResult.position;
         }
     });
 
-    console.log(`The count of goal reached is ${countGoalReached}`);
+    console.log(`The count of goal reached is ${goalsReached}`);
 }
 
 const parseLine = (line: string) => {
