@@ -1,18 +1,38 @@
-import { subtract } from './1.2.logic';
+import { Lock } from './1.2.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+let messages: string[] = [];
+let countGoalReached = 0;
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC ${subtract(2025, 1)}!`);
+    const lock = new Lock({
+        position: 50,
+        min: 0,
+        max: 99,
+        goal: 0
+    });
+
+    messages.forEach((message) => {
+        let direction = message.startsWith('L') ? 'left' : 'right';
+        let amount = Number.parseInt(message.slice(1), 10);
+
+        if (amount > 0) {
+            if (direction === 'left') {
+                countGoalReached += lock.turnLeft(amount);
+            } else {
+                countGoalReached += lock.turnRight(amount);
+            }
+        }
+    });
+
+    console.log(`The count of goal reached is ${countGoalReached}`);
 }
 
 const parseLine = (line: string) => {
-    message = line;
+   messages.push(line);
 };
 
 var lineReader = require('readline').createInterface({
