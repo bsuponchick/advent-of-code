@@ -1,18 +1,23 @@
-import { add } from './3.1.logic';
+import { calculateJoltage } from './3.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+const rowsOfBatteries: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC ${add(2023, 2)}!`);
+    let sumOfJoltages = 0;
+
+    rowsOfBatteries.forEach((battery) => {
+        sumOfJoltages += calculateJoltage(battery);
+    });
+
+    console.log(`The sum of the joltages is ${sumOfJoltages}`);
 }
 
 const parseLine = (line: string) => {
-   message = line;
+   rowsOfBatteries.push(line);
 };
 
 var lineReader = require('readline').createInterface({
