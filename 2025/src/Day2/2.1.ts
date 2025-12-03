@@ -1,18 +1,23 @@
-import { add } from './2.1.logic';
+import { getInvalidProductIdsFromRange } from './2.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+let ranges: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC ${add(2023, 2)}!`);
+    let invalidProductIds: number[] = [];
+
+    ranges.forEach((range) => {
+        invalidProductIds.push(...getInvalidProductIdsFromRange(range));
+    });
+
+    console.log(`The sum of the invalid product ids is ${invalidProductIds.reduce((sum, invalidProductId) => sum + invalidProductId, 0)}`);
 }
 
 const parseLine = (line: string) => {
-   message = line;
+   ranges = line.split(',');
 };
 
 var lineReader = require('readline').createInterface({
