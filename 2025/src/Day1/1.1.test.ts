@@ -9,6 +9,7 @@ describe('Day 0 - Part 1', () => {
                     position: 1,
                     min: 0,
                     max: 10,
+                    goal: 0,
                 });
 
                 expect(lock.position).toBe(1);
@@ -24,6 +25,7 @@ describe('Day 0 - Part 1', () => {
                 position: 1,
                 min: 0,
                 max: 10,
+                goal: 0,
             });
             lock.turnLeft(2);
             expect(lock.position).toBe(10);
@@ -36,6 +38,7 @@ describe('Day 0 - Part 1', () => {
                 position: 1,
                 min: 0,
                 max: 10,
+                goal: 0,
             });
             lock.turnRight(2);
             expect(lock.position).toBe(3);
@@ -46,6 +49,7 @@ describe('Day 0 - Part 1', () => {
                 position: 10,
                 min: 0,
                 max: 10,
+                goal: 0,
             });
             lock.turnRight(2);
             expect(lock.position).toBe(1);
@@ -56,6 +60,7 @@ describe('Day 0 - Part 1', () => {
                 position: 0,
                 min: 0,
                 max: 10,
+                goal: 0,
             });
             lock.turnLeft(2);
             expect(lock.position).toBe(9);
@@ -66,6 +71,7 @@ describe('Day 0 - Part 1', () => {
                 position: 2,
                 min: 0,
                 max: 10,
+                goal: 0,
             });
             lock.turnLeft(2);
             expect(lock.position).toBe(0);
@@ -76,6 +82,7 @@ describe('Day 0 - Part 1', () => {
                 position: 8,
                 min: 0,
                 max: 10,
+                goal: 0,
             });
             lock.turnRight(2);
             expect(lock.position).toBe(10);
@@ -86,9 +93,22 @@ describe('Day 0 - Part 1', () => {
                 position: 5,
                 min: 0,
                 max: 10,
+                goal: 0,
             });
             lock.turnLeft(2);
             expect(lock.position).toBe(3);
+        });
+    });
+
+    describe(`isGoal`, () => {
+        test(`should return true when the position is equal to the goal`, () => {
+            const lock = new Lock({
+                position: 0,
+                min: 0,
+                max: 10,
+                goal: 0,
+            });
+            expect(lock.isGoal()).toBe(true);
         });
     });
 });

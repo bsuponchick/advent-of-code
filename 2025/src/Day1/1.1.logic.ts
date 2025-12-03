@@ -2,11 +2,13 @@ export class Lock {
     position: number;
     min: number;
     max: number;
+    goal: number;
 
-    constructor(args: { position: number, min: number, max: number }) {
+    constructor(args: { position: number, min: number, max: number, goal: number }) {
         this.position = args.position;
         this.min = args.min;
         this.max = args.max;
+        this.goal = args.goal;
     }
 
     turnLeft(amount: number): void {
@@ -29,5 +31,9 @@ export class Lock {
         } else {
             this.position = this.position + amount;
         }
+    }
+    
+    isGoal(): boolean {
+        return this.position === this.min;
     }
 }
