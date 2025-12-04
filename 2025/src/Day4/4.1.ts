@@ -1,18 +1,29 @@
-import { add } from './4.1.logic';
+import { Grid, Tile } from './4.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+const lines: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC ${add(2023, 2)}!`);
+    const grid = new Grid();
+    grid.parse(lines);
+    grid.printWithForkliftAccess();
+
+    let countOfTilesWithForkliftAccess = 0;
+    grid.tiles.forEach((row) => {
+        row.forEach((tile) => {
+            if (tile.canForkliftAccess()) {
+                countOfTilesWithForkliftAccess++;
+            }
+        });
+    });
+    console.log(`There are ${countOfTilesWithForkliftAccess} tiles with forklift access.`);
 }
 
 const parseLine = (line: string) => {
-   message = line;
+   lines.push(line);
 };
 
 var lineReader = require('readline').createInterface({
