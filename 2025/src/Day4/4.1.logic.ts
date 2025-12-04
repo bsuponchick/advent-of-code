@@ -97,6 +97,18 @@ export class Grid {
         });
     }
 
+    countTilesWithForkliftAccess(): number {
+        let countOfTilesWithForkliftAccess = 0;
+        this.tiles.forEach((row) => {
+            row.forEach((tile) => {
+                if (tile.canForkliftAccess()) {
+                    countOfTilesWithForkliftAccess++;
+                }
+            });
+        });
+        return countOfTilesWithForkliftAccess;
+    }
+
     parse(lines: string[]): void {
         lines.forEach((line, lineIndex) => {
             const row: Tile[] = [];

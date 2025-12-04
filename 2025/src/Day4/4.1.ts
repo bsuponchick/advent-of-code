@@ -11,14 +11,7 @@ const execute = () => {
     grid.parse(lines);
     grid.printWithForkliftAccess();
 
-    let countOfTilesWithForkliftAccess = 0;
-    grid.tiles.forEach((row) => {
-        row.forEach((tile) => {
-            if (tile.canForkliftAccess()) {
-                countOfTilesWithForkliftAccess++;
-            }
-        });
-    });
+    const countOfTilesWithForkliftAccess = grid.countTilesWithForkliftAccess();
     console.log(`There are ${countOfTilesWithForkliftAccess} tiles with forklift access.`);
 }
 

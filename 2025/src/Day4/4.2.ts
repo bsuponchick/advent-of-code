@@ -1,18 +1,21 @@
-import { subtract } from './4.2.logic';
+import { Grid, Tile } from './4.2.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+const lines: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC ${subtract(2025, 1)}!`);
+    const grid = new Grid();
+    grid.parse(lines);
+
+    const totalPaperTilesThatCanBeRemoved = grid.determineMaxNumberOfTilesThatBeRemoved();
+    console.log(`There are ${totalPaperTilesThatCanBeRemoved} tiles with forklift access.`);
 }
 
 const parseLine = (line: string) => {
-    message = line;
+   lines.push(line);
 };
 
 var lineReader = require('readline').createInterface({
