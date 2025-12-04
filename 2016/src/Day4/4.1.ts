@@ -1,18 +1,26 @@
-import { add } from './4.1.logic';
+import { Room } from './4.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+let input: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC 2016!`);
+    let sumOfValidSectorIds = 0;
+
+    input.forEach((line) => {
+        const room = new Room(line);
+        if (room.isValid()) {
+            sumOfValidSectorIds += room.sectorId;
+        }
+    });
+
+    console.log(`The sum of valid sector ids is ${sumOfValidSectorIds}`);
 }
 
 const parseLine = (line: string) => {
-   message = line;
+   input.push(line);
 };
 
 var lineReader = require('readline').createInterface({

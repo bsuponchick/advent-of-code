@@ -1,18 +1,24 @@
-import { add } from './4.2.logic';
+import { Room } from './4.2.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+let input: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC 2016!`);
+    let sumOfValidSectorIds = 0;
+
+    input.forEach((line) => {
+        const room = new Room(line);
+        if (room.isValid()) {
+            console.log(`${room.decryptName()} - ${room.sectorId}`);
+        }
+    });
 }
 
 const parseLine = (line: string) => {
-   message = line;
+   input.push(line);
 };
 
 var lineReader = require('readline').createInterface({

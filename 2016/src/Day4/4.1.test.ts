@@ -1,18 +1,27 @@
 import { describe, expect, test } from '@jest/globals';
-import { add } from './4.1.logic';
+import { Room } from './4.1.logic';
 
 describe('Day 4 - Part 1', () => {
-    describe(`When the add function is called...`, () => {
-        test(`with 1 and 2, it should return 3`, () => {
-            expect(add(1, 2)).toBe(3);
+    describe(`Room...`, () => {
+        describe(`Constructor`, () => {
+            test(`should create a new Room object`, () => {
+                const room = new Room('aaaaa-bbb-z-y-x-123[abxyz]');
+                expect(room.name).toEqual('aaaaa-bbb-z-y-x');
+                expect(room.sectorId).toEqual(123);
+                expect(room.checksum).toEqual('abxyz');
+            });
         });
 
-        test(`with 2 and 3, it should return 5`, () => {
-            expect(add(2, 3)).toBe(5);
-        });
+        describe(`When isValid is called...`, () => {
+            test(`should return true if the room is valid`, () => {
+                const room = new Room('aaaaa-bbb-z-y-x-123[abxyz]');
+                expect(room.isValid()).toBe(true);
+            });
 
-        test(`with 3 and 4, it should return 7`, () => {
-            expect(add(3, 4)).toBe(7);
+            test(`should return false if the room is not valid`, () => {
+                const room = new Room('totally-real-room-200[decoy]');
+                expect(room.isValid()).toBe(false);
+            });
         });
     });
 });
