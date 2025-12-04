@@ -1,57 +1,14 @@
 import { describe, expect, test } from '@jest/globals';
-import { getCountsOfDigitsInProductId, hasOnlyOneRepeatedDigit, noCountsAreGreaterThanOne, splitIntoEqualPartsOfLength, getLowestNonZeroCount, isInvalidProductId, getInvalidProductIdsFromRange } from './2.2.logic';
+import { splitIntoEqualPartsOfLength, allPartsAreEqual, isInvalidProductId, getInvalidProductIdsFromRange } from './2.2.logic';
 
 describe('Day 2 - Part 2', () => {
-    describe(`When the getCountsOfDigitsInProductId function is called...`, () => {
-        test(`with 1234567890, it should return [1,1,1,1,1,1,1,1,1,1]`, () => {
-            expect(getCountsOfDigitsInProductId(1234567890)).toEqual([1,1,1,1,1,1,1,1,1,1]);
+    describe(`When the allPartsAreEqual function is called...`, () => {
+        test(`with ['12', '12', '12'], it should return true`, () => {
+            expect(allPartsAreEqual(['12', '12', '12'])).toBe(true);
         });
 
-        test(`with 1111111111, it should return [0,10,0,0,0,0,0,0,0,0]`, () => {
-            expect(getCountsOfDigitsInProductId(1111111111)).toEqual([0,10,0,0,0,0,0,0,0,0]);
-        });
-
-        test(`with 9999999999, it should return [0,0,0,0,0,0,0,0,0,10]`, () => {
-            expect(getCountsOfDigitsInProductId(9999999999)).toEqual([0,0,0,0,0,0,0,0,0,10]);
-        });
-    });
-
-    describe(`When the hasOnlyOneRepeatedDigit function is called...`, () => {
-        test(`with [1,1,1,1,1,1,1,1,1,1], it should return false`, () => {
-            expect(hasOnlyOneRepeatedDigit([1,1,1,1,1,1,1,1,1,1])).toBe(false);
-        });
-
-        test(`with [0,10,0,0,0,0,0,0,0,0], it should return true`, () => {
-            expect(hasOnlyOneRepeatedDigit([0,10,0,0,0,0,0,0,0,0])).toBe(true);
-        });
-
-        test(`with [1,2,0,0,0,0,0,0,0,0], it should return false`, () => {
-            expect(hasOnlyOneRepeatedDigit([1,2,0,0,0,0,0,0,0,0])).toBe(false);
-        });
-    });
-
-    describe(`When the getLowestNonZeroCount function is called...`, () => {
-        test(`with [1,1,1,1,1,1,1,1,1,1], it should return 1`, () => {
-            expect(getLowestNonZeroCount([1,1,1,1,1,1,1,1,1,1])).toBe(1);
-        });
-
-        test(`with [0,10,0,0,0,0,0,0,0,0], it should return 10`, () => {
-            expect(getLowestNonZeroCount([0,10,0,0,0,0,0,0,0,0])).toBe(10);
-        });
-
-        test(`with [1,2,3,4,5,6,7,8,9,10], it should return 1`, () => {
-            expect(getLowestNonZeroCount([1,2,3,4,5,6,7,8,9,10])).toBe(1);
-        });
-    });
-
-
-    describe(`When the noCountsAreGreaterThanOne function is called...`, () => {
-        test(`with [1,1,1,1,1,1,1,1,1,1], it should return true`, () => {
-            expect(noCountsAreGreaterThanOne([1,1,1,1,1,1,1,1,1,1])).toBe(true);
-        });
-
-        test(`with [0,10,0,0,0,0,0,0,0,0], it should return false`, () => {
-            expect(noCountsAreGreaterThanOne([0,10,0,0,0,0,0,0,0,0])).toBe(false);
+        test(`with ['12', '13', '12'], it should return false`, () => {
+            expect(allPartsAreEqual(['12', '13', '12'])).toBe(false);
         });
     });
 
