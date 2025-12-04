@@ -1,18 +1,28 @@
-import { add } from './3.2.logic';
+import { isPossiblyValid, identifyTriangles } from './3.2.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+const input: string[] = [];
+const triangles: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC 2016!`);
+    let countOfValidTriangles = 0;
+
+    triangles.push(...identifyTriangles(input));
+
+    triangles.forEach((triangle) => {
+        if (isPossiblyValid(triangle)) {
+            countOfValidTriangles++;
+        }
+    });
+
+    console.log(`The count of valid triangles is ${countOfValidTriangles}`);
 }
 
 const parseLine = (line: string) => {
-   message = line;
+   input.push(line);
 };
 
 var lineReader = require('readline').createInterface({
