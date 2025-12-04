@@ -1,18 +1,24 @@
-import { add } from './2.1.logic';
+import { Keypad } from './2.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+let instructions: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC 2016!`);
+    const keypad = new Keypad();
+    let code = '';
+
+    instructions.forEach((instruction) => {
+        code += keypad.followDirectionsAndReturnCode(instruction).toString();
+    });
+
+    console.log(`The code is ${code}`);
 }
 
 const parseLine = (line: string) => {
-   message = line;
+   instructions.push(line);
 };
 
 var lineReader = require('readline').createInterface({
