@@ -23,6 +23,11 @@ program.command('create-year')
                 return;
             } else {
                 fs.mkdirSync(`../../${year}`);
+                fs.mkdirSync(`../../${year}/src`);
+                fs.mkdirSync(`../../${year}/src/utils`);
+                fs.mkdirSync(`../../${year}/src/utils/dijkstra`);
+                fs.mkdirSync(`../../${year}/src/utils/interfaces`);
+                fs.mkdirSync(`../../${year}/src/utils/math`);
 
                 // Create the days directories
                 let defaultDays = 25;
@@ -30,7 +35,7 @@ program.command('create-year')
                     defaultDays = parseInt(options.days);
                 }
                 for (let i = 1; i <= defaultDays; i++) {
-                    fs.mkdirSync(`../../${year}/Day${i}`);
+                    fs.mkdirSync(`../../${year}/src/Day${i}`);
 
                     // Create the day files
                     await fs.readFile(`../templates/day/logic.mustache`, (err, data) => {
@@ -42,8 +47,8 @@ program.command('create-year')
                         var logicPartOneContent = mustache.render(data.toString(), { day: i, part: 1, year: year });
                         var logicPartTwoContent = mustache.render(data.toString(), { day: i, part: 2, year: year });
 
-                        fs.writeFileSync(`../../${year}/Day${i}/${i}.1.logic.ts`, logicPartOneContent);
-                        fs.writeFileSync(`../../${year}/Day${i}/${i}.2.logic.ts`, logicPartTwoContent);
+                        fs.writeFileSync(`../../${year}/src/Day${i}/${i}.1.logic.ts`, logicPartOneContent);
+                        fs.writeFileSync(`../../${year}/src/Day${i}/${i}.2.logic.ts`, logicPartTwoContent);
                     });
 
                     await fs.readFile(`../templates/day/test.mustache`, (err, data) => {
@@ -55,8 +60,8 @@ program.command('create-year')
                         var testPartOneContent = mustache.render(data.toString(), { day: i, part: 1, year: year });
                         var testPartTwoContent = mustache.render(data.toString(), { day: i, part: 2, year: year });
 
-                        fs.writeFileSync(`../../${year}/Day${i}/${i}.1.test.ts`, testPartOneContent);
-                        fs.writeFileSync(`../../${year}/Day${i}/${i}.2.test.ts`, testPartTwoContent);
+                        fs.writeFileSync(`../../${year}/src/Day${i}/${i}.1.test.ts`, testPartOneContent);
+                        fs.writeFileSync(`../../${year}/src/Day${i}/${i}.2.test.ts`, testPartTwoContent);
                     });
 
                     await fs.readFile(`../templates/day/run.mustache`, (err, data) => {
@@ -68,8 +73,8 @@ program.command('create-year')
                         var runPartOneContent = mustache.render(data.toString(), { day: i, part: 1, year: year });
                         var runPartTwoContent = mustache.render(data.toString(), { day: i, part: 2, year: year });
 
-                        fs.writeFileSync(`../../${year}/Day${i}/${i}.1.ts`, runPartOneContent);
-                        fs.writeFileSync(`../../${year}/Day${i}/${i}.2.ts`, runPartTwoContent);
+                        fs.writeFileSync(`../../${year}/src/Day${i}/${i}.1.ts`, runPartOneContent);
+                        fs.writeFileSync(`../../${year}/src/Day${i}/${i}.2.ts`, runPartTwoContent);
                     });
 
                     await fs.readFile(`../templates/day/input.txt.mustache`, (err, data) => {
@@ -79,7 +84,7 @@ program.command('create-year')
                         }
 
                         var inputContent = mustache.render(data.toString(), { day: i, year: year });
-                        fs.writeFileSync(`../../${year}/Day${i}/input.txt`, inputContent);
+                        fs.writeFileSync(`../../${year}/src/Day${i}/input.txt`, inputContent);
                     });
 
                     await fs.readFile(`../templates/day/test.txt.mustache`, (err, data) => {
@@ -89,7 +94,7 @@ program.command('create-year')
                         }
 
                         var testContent = mustache.render(data.toString(), { day: i, year: year });
-                        fs.writeFileSync(`../../${year}/Day${i}/test.txt`, testContent);
+                        fs.writeFileSync(`../../${year}/src/Day${i}/test.txt`, testContent);
                     });
 
                     // Create the year files
@@ -142,6 +147,19 @@ program.command('create-year')
                         var jestConfigContent = mustache.render(data.toString(), { year: year });
                         fs.writeFileSync(`../../${year}/jest.config.js`, jestConfigContent);
                     });
+
+                    // Copy files from templates/utils/dijkstra to ../../${year}/src/utils/dijkstra
+                    fs.copyFileSync(`../templates/utils/dijkstra/dijkstra.ts`, `../../${year}/src/utils/dijkstra/dijkstra.ts`);
+                    fs.copyFileSync(`../templates/utils/dijkstra/dijkstra.test.ts`, `../../${year}/src/utils/dijkstra/dijkstra.test.ts`);
+
+                    // Copy files from templates/utils/interfaces to ../../${year}/src/utils/interfaces
+                    fs.copyFileSync(`../templates/utils/interfaces/coordinate.ts`, `../../${year}/src/utils/interfaces/coordinate.ts`);
+
+                    // Copy files from templates/utils/math to ../../${year}/src/utils/math
+                    fs.copyFileSync(`../templates/utils/math/gcd.ts`, `../../${year}/src/utils/math/gcd.ts`);
+                    fs.copyFileSync(`../templates/utils/math/gcd.test.ts`, `../../${year}/src/utils/math/gcd.test.ts`);
+                    fs.copyFileSync(`../templates/utils/math/lcm.ts`, `../../${year}/src/utils/math/lcm.ts`);
+                    fs.copyFileSync(`../templates/utils/math/lcm.test.ts`, `../../${year}/src/utils/math/lcm.test.ts`);
                 }
             }
         });
