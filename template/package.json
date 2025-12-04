@@ -1,0 +1,27 @@
+{
+    "name": "aoc-templater",
+    "version": "1.0.0",
+    "type": "commonjs",
+    "dependencies": {
+        "@digitak/esrun": "^3.2.26",
+        "typescript": "^5.9.3",
+        "uuid": "^13.0.0",
+        "mustache": "^4.2.0",
+        "commander": "^13.0.0",
+        "node-fetch": "^3.3.2"
+    },
+    "devDependencies": {
+        "@types/jest": "^30.0.0",
+        "@types/node": "^24.10.1",
+        "@types/prettier": "^3.0.0",
+        "jest": "^30.2.0",
+        "prettier": "^3.6.2",
+        "ts-jest": "^29.4.5",
+        "ts-node": "^10.9.2"
+    },
+    "scripts": {
+        "build": "tsc",
+        "format": "prettier --write src/**/*.ts",
+        "test": "NODE_OPTIONS=--max-old-space-size=8096 jest --verbose --runInBand"
+    }
+}
