@@ -1,18 +1,24 @@
-import { add } from './8.2.logic';
+import { Screen } from './8.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+let commands: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC 2016!`);
+    const screen = test ? new Screen(7, 3) : new Screen(50, 6);
+    for(const command of commands) {
+        screen.followCommand(command);
+        if (debug) {
+            screen.print();
+        }
+    }
+    screen.print();
 }
 
 const parseLine = (line: string) => {
-   message = line;
+   commands.push(line);
 };
 
 var lineReader = require('readline').createInterface({
