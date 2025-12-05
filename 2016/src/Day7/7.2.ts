@@ -1,18 +1,26 @@
-import { add } from './7.2.logic';
+import { AbaDetector } from './7.2.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+let lines: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC 2016!`);
+    let countOfSSlSupportedLines = 0;
+
+    lines.forEach((line) => {
+        const lineSegments = AbaDetector.parseLine(line);
+        if (AbaDetector.isSslSupported(lineSegments)) {
+            countOfSSlSupportedLines++;
+        }
+    });
+
+    console.log(`There are ${countOfSSlSupportedLines} SSL supported lines.`);
 }
 
 const parseLine = (line: string) => {
-   message = line;
+   lines.push(line);
 };
 
 var lineReader = require('readline').createInterface({
