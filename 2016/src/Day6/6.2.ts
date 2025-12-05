@@ -1,18 +1,18 @@
-import { add } from './6.2.logic';
+import { SignalDecoder } from './6.2.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+let signals: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC 2016!`);
+    const signalDecoder = new SignalDecoder(signals);
+    console.log(`The decoded message is ${signalDecoder.decode()}`);
 }
 
 const parseLine = (line: string) => {
-   message = line;
+   signals.push(line);
 };
 
 var lineReader = require('readline').createInterface({
