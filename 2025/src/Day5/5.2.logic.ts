@@ -43,10 +43,10 @@ export class SetUnionizer {
                 if (r === r2) {
                     return false;
                 } else if (r.start <= r2.end && r.start >= r2.start) {
-                    console.log(`Overlap Option 1 detected between ${JSON.stringify(r)} and ${JSON.stringify(r2)}`);
+                    console.log(`Overlap detected between ${JSON.stringify(r)} and ${JSON.stringify(r2)}`);
                     return true;
                 } else if (r.end >= r2.start && r.end <= r2.end) {
-                    console.log(`Overlap Option 2 detected between ${JSON.stringify(r)} and ${JSON.stringify(r2)}`);
+                    console.log(`Overlap detected between ${JSON.stringify(r)} and ${JSON.stringify(r2)}`);
                     return true;
                 } else {
                     return false;
