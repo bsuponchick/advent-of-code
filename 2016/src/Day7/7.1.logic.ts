@@ -1,6 +1,6 @@
 export interface LineSegments {
     hypernet: string[];
-    regular: string[];
+    supernet: string[];
 }
 
 export class AbbaDetector {
@@ -17,7 +17,7 @@ export class AbbaDetector {
     public static parseLine(line: string): LineSegments {
         const lineSegments: LineSegments = {
             hypernet: [],
-            regular: []
+            supernet: []
         };
 
         const parts = line.split(']');
@@ -25,10 +25,10 @@ export class AbbaDetector {
         parts.forEach((part, index) => {
             if (part.includes('[')) {
                 const innerParts = part.split('[');
-                lineSegments.regular.push(innerParts[0]);
+                lineSegments.supernet.push(innerParts[0]);
                 lineSegments.hypernet.push(innerParts[1]);
             } else {
-                lineSegments.regular.push(part.trim());
+                lineSegments.supernet.push(part.trim());
             }
         });
 
@@ -37,6 +37,6 @@ export class AbbaDetector {
 
     public static isTlsSupported(lineSegments: LineSegments): boolean {
         return !lineSegments.hypernet.some((hypernet) => AbbaDetector.isAbba(hypernet)) &&
-            lineSegments.regular.some((regular) => AbbaDetector.isAbba(regular));
+            lineSegments.supernet.some((supernet) => AbbaDetector.isAbba(supernet));
     }
 }
