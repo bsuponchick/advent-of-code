@@ -1,18 +1,20 @@
 import { describe, expect, test } from '@jest/globals';
-import { add } from './5.1.logic';
+import { FreshnessDetector } from './5.1.logic';
 
-describe('Day 0 - Part 1', () => {
-    describe(`When the add function is called...`, () => {
-        test(`with 1 and 2, it should return 3`, () => {
-            expect(add(1, 2)).toBe(3);
-        });
+describe('Day 5 - Part 1', () => {
+    describe(`FreshnessDetector...`, () => {
+        describe(`When isFresh is called...`, () => {
+            test(`should return true if the value is in the range`, () => {
+                expect(FreshnessDetector.isFresh(1, [{ start: 1, end: 10 }])).toBe(true);
+            });
 
-        test(`with 2 and 3, it should return 5`, () => {
-            expect(add(2, 3)).toBe(5);
-        });
+            test(`should return false if the value is not in the range`, () => {
+                expect(FreshnessDetector.isFresh(11, [{ start: 1, end: 10 }])).toBe(false);
+            });
 
-        test(`with 3 and 4, it should return 7`, () => {
-            expect(add(3, 4)).toBe(7);
+            test(`should return true if the value is in a range that isn't the first range`, () => {
+                expect(FreshnessDetector.isFresh(12, [{ start: 1, end: 10 }, { start: 11, end: 20 }])).toBe(true);
+            });
         });
     });
 });
