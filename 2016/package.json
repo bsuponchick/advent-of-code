@@ -5,7 +5,8 @@
     "dependencies": {
         "@digitak/esrun": "^3.2.26",
         "typescript": "^5.9.3",
-        "uuid": "^13.0.0"
+        "uuid": "^13.0.0",
+        "ts-md5": "^1.2.2"
     },
     "devDependencies": {
         "@types/jest": "^30.0.0",
