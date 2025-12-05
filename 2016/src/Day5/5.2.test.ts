@@ -1,18 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { add } from './5.2.logic';
+import { findPassword } from './5.2.logic';
 
-describe('Day 5 - Part 2', () => {
-    describe(`When the add function is called...`, () => {
-        test(`with 1 and 2, it should return 3`, () => {
-            expect(add(1, 2)).toBe(3);
-        });
-
-        test(`with 2 and 3, it should return 5`, () => {
-            expect(add(2, 3)).toBe(5);
-        });
-
-        test(`with 3 and 4, it should return 7`, () => {
-            expect(add(3, 4)).toBe(7);
+describe('Day 5 - Part 1', () => {
+    describe(`When the findPassword function is called...`, () => {
+        test(`It should return 05ace8e3 for the input abc`, () => {
+            expect(findPassword('abc')).toBe('05ace8e3');
         });
     });
 });
