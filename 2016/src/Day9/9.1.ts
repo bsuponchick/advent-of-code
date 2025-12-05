@@ -1,4 +1,4 @@
-import { add } from './9.1.logic';
+import { Decompressor } from './9.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
@@ -7,8 +7,8 @@ const test = args.includes('--test');
 let message: string = '';
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC 2016!`);
+    const decompressed = Decompressor.decompress(message);
+    console.log(`The decompressed length is ${decompressed.length}`);
 }
 
 const parseLine = (line: string) => {
