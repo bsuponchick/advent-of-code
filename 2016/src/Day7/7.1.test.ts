@@ -1,18 +1,44 @@
 import { describe, expect, test } from '@jest/globals';
-import { add } from './7.1.logic';
+import { AbbaDetector, LineSegments } from './7.1.logic';
 
 describe('Day 7 - Part 1', () => {
-    describe(`When the add function is called...`, () => {
-        test(`with 1 and 2, it should return 3`, () => {
-            expect(add(1, 2)).toBe(3);
+    describe(`AbbaDetector...`, () => {
+        describe(`When isAbba is called...`, () => {
+            test(`should return true if the input is an ABBA`, () => {
+                expect(AbbaDetector.isAbba('abba')).toBe(true);
+            });
+
+            test(`should return false if the input is not an ABBA`, () => {
+                expect(AbbaDetector.isAbba('abcd')).toBe(false);
+            });
+
+            test(`should return true if the line contains an ABBA`, () => {
+                expect(AbbaDetector.isAbba('xxxabbayyy')).toBe(true);
+            });
+
+            test(`should return false if the input is all the same character`, () => {
+                expect(AbbaDetector.isAbba('aaaa')).toBe(false);
+            });
         });
 
-        test(`with 2 and 3, it should return 5`, () => {
-            expect(add(2, 3)).toBe(5);
+        describe(`When parseLine is called...`, () => {
+            test(`should parse the line correctly`, () => {
+                const lineSegments = AbbaDetector.parseLine('abba[mnop]qrst');
+                expect(lineSegments.hypernet).toEqual(['mnop']);
+                expect(lineSegments.regular).toEqual(['abba', 'qrst']);
+            });
         });
 
-        test(`with 3 and 4, it should return 7`, () => {
-            expect(add(3, 4)).toBe(7);
+        describe(`When isTlsSupported is called...`, () => {
+            test(`should return true if the line is supported`, () => {
+                const lineSegments = AbbaDetector.parseLine('abba[mnop]qrst');
+                expect(AbbaDetector.isTlsSupported(lineSegments)).toBe(true);
+            });
+        });
+
+        test(`should return false if the line is not supported`, () => {
+            const lineSegments = AbbaDetector.parseLine('abcd[bddb]xyyx');
+            expect(AbbaDetector.isTlsSupported(lineSegments)).toBe(false);
         });
     });
 });

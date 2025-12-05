@@ -1,18 +1,26 @@
-import { add } from './7.1.logic';
+import { AbbaDetector } from './7.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+let lines: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC 2016!`);
+    let countOfTlsSupportedLines = 0;
+
+    lines.forEach((line) => {
+        const lineSegments = AbbaDetector.parseLine(line);
+        if (AbbaDetector.isTlsSupported(lineSegments)) {
+            countOfTlsSupportedLines++;
+        }
+    });
+
+    console.log(`There are ${countOfTlsSupportedLines} TLS supported lines.`);
 }
 
 const parseLine = (line: string) => {
-   message = line;
+   lines.push(line);
 };
 
 var lineReader = require('readline').createInterface({
