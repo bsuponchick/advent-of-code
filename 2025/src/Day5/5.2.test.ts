@@ -1,18 +1,36 @@
 import { describe, expect, test } from '@jest/globals';
-import { subtract } from './5.2.logic';
+import { SetUnionizer } from './5.2.logic';
 
-describe('Day  - Part 2', () => {
-    describe(`When the subtract function is called...`, () => {
-        test(`with 1 and 2, it should return -1`, () => {
-            expect(subtract(1, 2)).toBe(-1);
+describe('Day 5 - Part 2', () => {
+    describe(`SetUnionizer....`, () => {
+        describe(`When filterOutContainedRanges is called...`, () => {
+            test(`should return the ranges that are not contained in any other range`, () => {
+                expect(SetUnionizer.filterOutContainedRanges([{ start: 1, end: 10 }, { start: 11, end: 20 }])).toEqual([{ start: 1, end: 10 }, { start: 11, end: 20 }]);
+            });
+
+            test(`should not return ranges that are fully contained in another range`, () => {
+                expect(SetUnionizer.filterOutContainedRanges([{ start: 1, end: 10 }, { start: 5, end: 15 }])).toEqual([{ start: 1, end: 10 }, { start: 5, end: 15}]);
+            });
         });
 
-        test(`with 2 and 3, it should return -1`, () => {
-            expect(subtract(2, 3)).toBe(-1);
+        describe(`When reduceRanges is called...`, () => {
+            test(`should return the ranges that are reduced to the smallest possible range`, () => {
+                expect(SetUnionizer.reduceRanges([{ start: 1, end: 10 }, { start: 5, end: 15 }])).toEqual([{ start: 1, end: 15 }]);
+            });
+
+            test(`should reduce the ranges that result in overlaps after one sweep`, () => {
+                expect(SetUnionizer.reduceRanges([{ start: 1, end: 10 }, { start: 15, end: 20 }, { start: 5, end: 15 }, { start: 11, end: 20 }])).toEqual([{ start: 1, end: 20 }]);
+            });
         });
 
-        test(`with 3 and 4, it should return -1`, () => {
-            expect(subtract(3, 4)).toBe(-1);
+        describe(`When countUniqueItemsInRanges is called...`, () => {
+            test(`should return the number of unique items in the ranges`, () => {
+                expect(SetUnionizer.countUniqueItemsInRanges([{ start: 1, end: 10 }, { start: 11, end: 20 }])).toBe(20);
+            });
+
+            test(`should return the number of unique items in the ranges that are not contained in any other range`, () => {
+                expect(SetUnionizer.countUniqueItemsInRanges([{ start: 1, end: 10 }, { start: 11, end: 20 }, { start: 5, end: 15 }])).toBe(20);
+            });
         });
     });
 });

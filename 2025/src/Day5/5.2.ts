@@ -1,18 +1,28 @@
-import { subtract } from './5.2.logic';
+import { SetUnionizer, Range } from './5.2.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+let ranges: Range[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC ${subtract(2025, 1)}!`);
+    console.log(`There are ${ranges.length} ranges`);
+    ranges.sort((a, b) => a.start - b.start);
+
+    // console.log(`Sorted ranges: ${JSON.stringify(ranges)}`);
+
+    const countOfUniqueItems = SetUnionizer.countUniqueItemsInRanges(ranges);
+
+    console.log(`There are ${countOfUniqueItems} unique items`);
+
 }
 
 const parseLine = (line: string) => {
-    message = line;
+    if (line.indexOf('-') > -1) {
+        const [rangeStart, rangeEnd] = line.split('-').map(Number);
+        ranges.push({ start: rangeStart, end: rangeEnd });
+    }
 };
 
 var lineReader = require('readline').createInterface({
@@ -25,4 +35,4 @@ lineReader.on('line', (line) => {
     execute();
 });
 
-export {};
+export { };
