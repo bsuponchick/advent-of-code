@@ -12,17 +12,21 @@ export class Microchip {
 
 export class Bot implements MicrochipTarget {
     id: number;
+    lowGoalId: number;
+    highGoalId: number;
     low: Microchip | null;
     high: Microchip | null;
     lowTarget: MicrochipTarget | null;
     highTarget: MicrochipTarget | null;
 
-    constructor(id: number) {
+    constructor(id: number, lowGoalId: number, highGoalId: number) {
         this.id = id;
         this.low = null;
         this.high = null;
         this.lowTarget = null;
         this.highTarget = null;
+        this.lowGoalId = lowGoalId;
+        this.highGoalId = highGoalId;
     }
 
     addMicrochip(Microchip: Microchip) {
@@ -37,6 +41,10 @@ export class Bot implements MicrochipTarget {
             }
 
             // Now the bot is full so we need to send the microchips to its targets
+            if ((this.low.value === this.lowGoalId) && (this.high.value === this.highGoalId)) {
+                console.log(`Bot ${this.id} is the winner!`);
+            }
+            
             if (this.lowTarget !== null) {
                 this.lowTarget.addMicrochip(this.low);
                 this.low = null;
