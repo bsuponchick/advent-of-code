@@ -1,18 +1,51 @@
-import { add } from './6.1.logic';
+import { CephalopodCalculator, Command } from './6.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+const commands: Command[] = [];
+const numbers: number[][] = [];
+const symbols: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC ${add(2023, 2)}!`);
+    for (let i = 0; i < numbers[0].length; i++) {
+        const column: number[] = [];
+        for (let j = 0; j < numbers.length; j++) {
+            column.push(numbers[j][i]);
+        }
+
+        if (symbols[i] === '+') {
+            commands.push({ type: 'add', values: column });
+        } else if (symbols[i] === '*') {
+            commands.push({ type: 'multiply', values: column });
+        }
+    }
+
+    const result = CephalopodCalculator.executeCommandsAndAddResults(commands);
+    console.log(`The result is ${result}`);
 }
 
 const parseLine = (line: string) => {
-   message = line;
+    const splitLine = line.trim().replace(/(\s+)/g, 'XXX').split('XXX');
+
+    if (splitLine[0] === '+' || splitLine[0] === '*') {
+        for (const symbol of splitLine) {
+            if (symbol.trim().length > 0) {
+                symbols.push(symbol);
+            }
+        }
+    } else {
+        const row: number[] = [];
+
+        for (const number of splitLine) {
+            if (number.trim().length > 0) {   
+                row.push(Number(number));
+            }
+        }
+
+        numbers.push(row);
+    }
 };
 
 var lineReader = require('readline').createInterface({
