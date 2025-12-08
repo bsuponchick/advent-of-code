@@ -1,18 +1,22 @@
-import { subtract } from './7.2.logic';
+import { QuantumTachyonManifold } from './7.2.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+let lines: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC ${subtract(2025, 1)}!`);
+    const manifold = new QuantumTachyonManifold();
+    manifold.parse(lines);
+    manifold.connectTiles();
+    
+    const countOfSplits = manifold.simulate();
+    console.log(`There are ${countOfSplits} splits.`);
 }
 
 const parseLine = (line: string) => {
-    message = line;
+   lines.push(line);
 };
 
 var lineReader = require('readline').createInterface({
