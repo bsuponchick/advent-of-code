@@ -1,22 +1,20 @@
 export class Tile {
+    id: number;
     value: string;
     north: Tile | null;
     east: Tile | null;
     south: Tile | null;
     west: Tile | null;
     hasSplit: boolean;
-    visitedLeft: boolean;
-    visitedRight: boolean;
 
-    constructor(value: string) {
+    constructor(id: number,value: string) {
+        this.id = id;
         this.value = value;
         this.north = null;
         this.east = null;
         this.south = null;
         this.west = null;
         this.hasSplit = false;
-        this.visitedLeft = false;
-        this.visitedRight = false;
     }
 
     setNorth(tile: Tile) {
@@ -83,27 +81,6 @@ export class Tile {
             this.hasSplit = true;
         }
     }
-
-    visitLeft(): void {
-        this.visitedLeft = true;
-    }
-
-    hasVisitedLeft(): boolean {
-        return this.visitedLeft;
-    }
-
-    visitRight(): void {
-        this.visitedRight = true;
-    }
-
-    hasVisitedRight(): boolean {
-        return this.visitedRight;
-    }
-
-    clearVisits(): void {
-        this.visitedLeft = false;
-        this.visitedRight = false;
-    }
 }
 
 export class QuantumTachyonManifold {
@@ -111,10 +88,12 @@ export class QuantumTachyonManifold {
     start: Tile | null;
     splitters: Tile[];
     tachyons: Tile[];
+    cache: Map<number, number>;
 
     constructor() {
         this.tiles = [];
         this.start = null;
+        this.cache = new Map<number, number>();
         this.splitters = [];
         this.tachyons = [];
     }
@@ -146,10 +125,12 @@ export class QuantumTachyonManifold {
     }
 
     parse(lines: string[]): void {
+        let index = 0;
         lines.forEach((line) => {
             const row: Tile[] = [];
             line.split('').forEach((char) => {
-                const tile = new Tile(char);
+                const tile = new Tile(index, char);
+                index++;
                 row.push(tile);
 
                 if (tile.isStart()) {
@@ -178,70 +159,39 @@ export class QuantumTachyonManifold {
         console.log(line);
     }
 
-    printPath(path: Tile[]): void {
-        let line = '';
-
-        this.tiles.forEach((row) => {
-            row.forEach((tile) => {
-                if (tile.isSplitter()) {
-                    line += tile.value;
-                } else if (path.includes(tile)) {
-                    line += 'X';
-                } else {
-                    line += tile.value;
-                }
-            });
-            line += '\n';
-        });
-
-        console.log(line);
+    simulate(): number {        
+        return this.getCountOfPossiblePaths(this.start.getSouth());
     }
 
-    simulate(): number {
-        let countOfPossiblePaths = 0;
-        const path: Tile[] = [this.start, this.start.getSouth()];
-        let currentTile = this.start.getSouth();
-
-        while (currentTile !== this.start) {
-            if (currentTile.isEmpty()) {
-                if (currentTile.getSouth() === null) {
-                    // This is a goal state
-                    countOfPossiblePaths++;
-                    console.log(`Reached a goal state, count of possible paths: ${countOfPossiblePaths}`);
-
-                    this.printPath(path);
-
-                    // Navigate back up until you hit a splitter
-
-                    while (!currentTile.isSplitter() && !currentTile.isStart()) {
-                        currentTile = path.pop();
-                    }
-                } else {
-                    // console.log(`Going south`);
-                    path.push(currentTile.getSouth());
-                    currentTile = currentTile.getSouth();
-                }
-            } else if (currentTile.isSplitter()) {
-                // There's a splitter on the current tile
-                // console.log(`There's a splitter on the current tile`);
-                if (currentTile.getWest() !== null && !currentTile.hasVisitedLeft()) {
-                    // console.log(`Going left`);
-                    currentTile.visitLeft();
-                    path.push(currentTile.getWest());
-                    currentTile = currentTile.getWest();
-                } else if (currentTile.getEast() !== null && !currentTile.hasVisitedRight()) {
-                    // console.log(`Going right`);
-                    currentTile.visitRight();
-                    path.push(currentTile.getEast());
-                    currentTile = currentTile.getEast();
-                } else {
-                    // console.log(`Been both ways, going back`);
-                    currentTile.clearVisits();
-                    currentTile = path.pop();
-                }
-            }
+    getCountOfPossiblePaths(tile: Tile): number { 
+        if (this.cache.has(tile.id)) {
+            return this.cache.get(tile.id);
         }
 
-        return countOfPossiblePaths;
+        if (tile.isEmpty()) {
+            let nextTile = tile.getSouth();
+
+            if (nextTile === null) {
+                this.cache.set(tile.id, 1);
+
+                return 1;
+            }
+
+            const count = this.getCountOfPossiblePaths(nextTile);
+            
+            this.cache.set(tile.id, count);
+            return count;
+        } else if (tile.isSplitter()) {
+            if (this.cache.has(tile.id)) {
+                return this.cache.get(tile.id);
+            }
+
+            const leftCount = this.cache.get(tile.getWest().id) ? this.cache.get(tile.getWest().id) : this.getCountOfPossiblePaths(tile.getWest());
+            const rightCount = this.cache.get(tile.getEast().id) ? this.cache.get(tile.getEast().id) : this.getCountOfPossiblePaths(tile.getEast());
+            
+            this.cache.set(tile.id, leftCount + rightCount);
+            
+            return leftCount + rightCount;
+        }
     }
 }
