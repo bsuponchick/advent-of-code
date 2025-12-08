@@ -1,18 +1,22 @@
-import { add } from './7.1.logic';
+import { TachyonManifold } from './7.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+let lines: string[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC ${add(2023, 2)}!`);
+    const manifold = new TachyonManifold();
+    manifold.parse(lines);
+    manifold.connectTiles();
+    
+    const countOfSplits = manifold.simulate();
+    console.log(`There are ${countOfSplits} splits.`);
 }
 
 const parseLine = (line: string) => {
-   message = line;
+   lines.push(line);
 };
 
 var lineReader = require('readline').createInterface({
