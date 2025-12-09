@@ -19,6 +19,6 @@
     "scripts": {
         "build": "tsc",
         "format": "prettier --write src/**/*.ts",
-        "test": "NODE_OPTIONS=--max-old-space-size=8096 jest --verbose --runInBand"
+        "test": "NODE_OPTIONS=--max-old-space-size=8196 jest --verbose --runInBand"
     }
 }
