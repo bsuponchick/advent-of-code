@@ -1,5 +1,5 @@
 import { XYCoordinate } from '../utils/interfaces/coordinate';
-import { Grid } from './9.2.logic';
+import { Decider } from './9.2.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
@@ -8,13 +8,35 @@ const test = args.includes('--test');
 const coordinates: XYCoordinate[] = [];
 
 const execute = () => {
-    const maxX = Math.max(...coordinates.map(coordinate => coordinate.x));
-    const maxY = Math.max(...coordinates.map(coordinate => coordinate.y));
-    console.log(`Max X: ${maxX}, Max Y: ${maxY}`);
+    const decider = new Decider();
+    const lineSegments = decider.createLineSegmentsFromVertices(coordinates);
 
-    const grid = new Grid(maxX + 1, maxY + 1, coordinates);
-   
-    grid.print();
+    let maxArea = 0;
+    for (let i = 0; i < coordinates.length; i++) {
+        for (let j = i + 1; j < coordinates.length; j++) {
+            let allGood = true;
+
+            const coordinatesInRectangle = decider.getAllXYCoordinatesInRectangle(coordinates[i], coordinates[j]);
+            for (let k = 0; k < coordinatesInRectangle.length; k++) {
+                if (!decider.isInterior(coordinatesInRectangle[k], lineSegments)) {
+                    allGood = false;
+                    break;
+                }
+            }
+
+            if (allGood) {
+                // console.log(`Coordinates ${coordinates[i].x},${coordinates[i].y} and ${coordinates[j].x},${coordinates[j].y} are all good`);
+                const area = decider.calculateAreaBetweenCoordinates(coordinates[i], coordinates[j]);
+                if (area > maxArea) {
+                    console.log(`New max area: ${area}`);
+                    maxArea = area;
+                }
+            } else {
+                // console.log(`Coordinates ${coordinates[i].x},${coordinates[i].y} and ${coordinates[j].x},${coordinates[j].y} are not all good`);
+            }
+        }
+    }
+    console.log(`The max area is ${maxArea}`);
 }
 
 const parseLine = (line: string) => {
