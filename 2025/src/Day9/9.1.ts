@@ -1,18 +1,29 @@
-import { add } from './9.1.logic';
+import { XYCoordinate } from '../utils/interfaces/coordinate';
+import { calculateAreaBetweenCoordinates } from './9.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+const coordinates: XYCoordinate[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC ${add(2023, 2)}!`);
+    let maxArea = 0;
+
+    for (let i = 0; i < coordinates.length; i++) {
+        for (let j = i + 1; j < coordinates.length; j++) {
+            const area = calculateAreaBetweenCoordinates(coordinates[i], coordinates[j]);
+            if (area > maxArea) {
+                maxArea = area;
+            }
+        }
+    }
+    console.log(`The max area is ${maxArea}`);
 }
 
 const parseLine = (line: string) => {
-   message = line;
+    const [x, y] = line.split(',').map(Number);
+    coordinates.push({ x, y });
 };
 
 var lineReader = require('readline').createInterface({
