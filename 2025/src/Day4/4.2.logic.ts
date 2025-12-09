@@ -1,4 +1,4 @@
-import { Coordinate } from '../utils/interfaces/coordinate';
+import { XYCoordinate } from '../utils/interfaces/coordinate';
 
 export class Tile {
     north: Tile | null;
@@ -9,10 +9,10 @@ export class Tile {
     southWest: Tile | null;
     southEast: Tile | null;
     northWest: Tile | null;
-    coordinate: Coordinate;
+    coordinate: XYCoordinate;
     type: string;
 
-    constructor(coordinate: Coordinate, type: string) {
+    constructor(coordinate: XYCoordinate, type: string) {
         this.north = null;
         this.east = null;
         this.south = null;
@@ -148,7 +148,7 @@ export class Grid {
         lines.forEach((line, lineIndex) => {
             const row: Tile[] = [];
             line.split('').forEach((char, charIndex) => {
-                const coordinate: Coordinate = { x: charIndex, y: lineIndex };
+                const coordinate: XYCoordinate = { x: charIndex, y: lineIndex };
                 const tile = new Tile(coordinate, char);
                 row.push(tile);
             });
