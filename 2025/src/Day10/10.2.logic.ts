@@ -57,7 +57,7 @@ export class Machine {
         let steps = 0;
         let goalReached = false;
 
-        // First, we need to press any buttons with a wire that only appears once and then remove those buttons from being pressed again
+        // First, we need to press any buttons with a wire that only appears once
         const singleWireButtons = this.buttons.filter(button => button.wires.some(wire => wireCounts.get(wire) === 1));
         let startingState = this.initialState;
 
@@ -74,6 +74,7 @@ export class Machine {
                     steps++;
                 }
 
+                // Once we've pressed them the correct number of times, we can remove the button from the list of buttons to consider
                 this.buttons = this.buttons.filter(b => b !== button);
                 console.log(`Buttons after pressing button: ${this.buttons.map(button => button.wires.join(',')).join(' ')}`);
             });
