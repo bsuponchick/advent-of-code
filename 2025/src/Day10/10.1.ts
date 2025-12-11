@@ -7,9 +7,17 @@ const test = args.includes('--test');
 const machines: Machine[] = [];
 
 const execute = () => {
+    let totalButtonPresses = 0;
+    
     machines.forEach(machine => {
         machine.print();
+        const buttonPresses = machine.findShortestPathToGoalState();
+        totalButtonPresses += buttonPresses;
+
+        console.log(`This machine required ${buttonPresses} button presses.`);
     });
+
+    console.log(`Total button presses: ${totalButtonPresses}`);
 }
 
 const parseLine = (line: string) => {
