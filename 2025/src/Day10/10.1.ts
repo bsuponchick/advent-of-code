@@ -1,18 +1,34 @@
-import { add } from './10.1.logic';
+import { Machine, Button } from './10.1.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
 const test = args.includes('--test');
 
-let message: string = '';
+const machines: Machine[] = [];
 
 const execute = () => {
-    console.log(`The message is ${message}`);
-    console.log(`Get ready for AoC ${add(2023, 2)}!`);
+    machines.forEach(machine => {
+        machine.print();
+    });
 }
 
 const parseLine = (line: string) => {
-   message = line;
+    const parts = line.split(' ');
+    let goalState = '';
+    let buttons: Button[] = [];
+    let joltage: number[] = [];
+    
+    parts.forEach(part => {
+        if (part.charAt(0) === '[') {
+            goalState = part.slice(1, part.length - 1);
+        } else if (part.charAt(0) === '(') {
+            buttons.push(new Button(part.slice(1, part.length - 1).split(',').map(Number)));
+        } else if (part.charAt(0) === '{') {
+            joltage = part.slice(1, part.length - 1).split(',').map(Number);
+        }
+    });
+
+    machines.push(new Machine(goalState, buttons, joltage));
 };
 
 var lineReader = require('readline').createInterface({
