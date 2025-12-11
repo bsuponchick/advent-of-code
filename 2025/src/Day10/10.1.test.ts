@@ -12,5 +12,36 @@ describe('Day 10 - Part 1', () => {
                 expect(machine.joltage.length).toBe(3);
             });
         });
+
+        describe(`When setState is called...`, () => {
+            test(`should set the current state correctly`, () => {
+                const machine = new Machine('.##..', [new Button([0,1, 2, 3,4])], [7, 8, 9]);
+                machine.setState('#..##');
+                expect(machine.currentState).toEqual('#..##');
+            });
+        });
+
+        describe(`When pressButton is called...`, () => {
+            test(`should change the current state to ##### when the button is [0,1,2,3,4]`, () => {
+                const machine = new Machine('.##..', [new Button([0,1, 2, 3,4])], [7, 8, 9]);
+                machine.pressButton(new Button([0, 1, 2, 3, 4]));
+                expect(machine.currentState).toEqual('#####');
+            });
+
+            test(`should change the current state to .#..# when the button is [0,1,2,3,4]`, () => {
+                const machine = new Machine('.##..', [new Button([0,1, 2, 3,4])], [7, 8, 9]);
+                machine.setState('#..##');
+                machine.pressButton(new Button([0, 1, 2, 3, 4]));
+                expect(machine.currentState).toEqual('.##..');
+            });
+        });
+
+        describe(`When isInGoalState is called...`, () => {
+            test(`should return true when the current state is the same as the goal state`, () => {
+                const machine = new Machine('.##..', [new Button([0,1, 2, 3,4])], [7, 8, 9]);
+                machine.setState('.##..');
+                expect(machine.isInGoalState()).toBe(true);
+            });
+        });
     });
 });
