@@ -1,4 +1,4 @@
-import { findAllPaths } from './11.2.logic';
+import { countPathsFromSvrToOut } from './11.2.logic';
 
 const args = process.argv;
 const debug = args.includes('--debug');
@@ -9,17 +9,9 @@ const graph: Map<string, string[]> = new Map<string, string[]>();
 const execute = () => {
     console.log(`The graph is: $${JSON.stringify(graph)}`);
 
-    const paths = findAllPaths({
-        startNode: 'svr',
-        endNode: 'out',
-        graph: graph,
-    });
+    const paths = countPathsFromSvrToOut(graph);
 
-    console.log(`The paths are: $${JSON.stringify(paths)}`);
-
-    const pathsContainingDACandFFT = paths.filter(path => path.includes('dac') && path.includes('fft'));
-
-    console.log(`The number of paths to the goal state is: ${pathsContainingDACandFFT.length}`);
+    console.log(`The number of paths to the goal state is: ${paths}`);
 }
 
 const parseLine = (line: string) => {
