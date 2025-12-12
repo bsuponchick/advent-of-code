@@ -43,6 +43,22 @@ export class PuzzlePiece {
         output += `========================================\n`;
         console.log(output);
     }
+
+    rotate(): void {
+        // Rotate the shape 90 degrees clockwise
+        //  ###      ###      ###      #.#
+        //  #..  ->  #.#  ->  ..#  ->  #.#
+        //  ###      #.#      ###      ###
+
+        let newShape: string[] = [];
+        
+        // Take advantage fo the fact that all shapes are 3x3 squares
+        newShape.push(`${this.shape[2].charAt(0)}${this.shape[1].charAt(0)}${this.shape[0].charAt(0)}`);
+        newShape.push(`${this.shape[2].charAt(1)}${this.shape[1].charAt(1)}${this.shape[0].charAt(1)}`);
+        newShape.push(`${this.shape[2].charAt(2)}${this.shape[1].charAt(2)}${this.shape[0].charAt(2)}`);
+
+        this.shape = newShape;
+    }
 }
 
 interface GridSize {

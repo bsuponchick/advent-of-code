@@ -44,5 +44,19 @@ describe('Day 12 - Part 1', () => {
                 expect(puzzlePiece.area()).toBe(8);
             });
         });
+
+        describe(`When rotate is called...`, () => {
+            test(`should rotate the shape 90 degrees clockwise`, () => {
+                const puzzlePiece = new PuzzlePiece('1', ['###', '#..', '###']);
+                puzzlePiece.rotate();
+                expect(puzzlePiece.shape).toEqual(['###', '#.#', '#.#']);
+                puzzlePiece.rotate();
+                expect(puzzlePiece.shape).toEqual(['###', '..#', '###']);
+                puzzlePiece.rotate();
+                expect(puzzlePiece.shape).toEqual(['#.#', '#.#', '###']);
+                puzzlePiece.rotate();
+                expect(puzzlePiece.shape).toEqual(['###', '#..', '###']);
+            });
+        });
     });
 });
