@@ -30,19 +30,43 @@ const execute = () => {
     }
 
     // Determine if there are any grids that are impossible to solve due to area mismatch
-    let gridsToSolve: Grid[] = [];
-    let countImpossibleDueToAreaMismatch = 0;
+    let gridsWithEnoughArea: Grid[] = [];
+    let potentiallySolvableGrids: Grid[] = [];
+    let gridsToBeSolved: Grid[] = [];
+
+
+    // Determine if there are any grids that are solvable simply by placing the pieces in the grid in the order of the goal
     grids.forEach((grid) => {
-        if (grid.calculateAreaOfGrid() < grid.calculateAreaOfGoal(puzzlePieces)) {
-            console.log(`Grid ${grid.size.height}x${grid.size.width} is impossible to solve due to area mismatch`);
-            countImpossibleDueToAreaMismatch++;
-        } else {
-            gridsToSolve.push(grid);
+        if (grid.calculateAreaOfGrid() >= grid.calculateAreaOfGoal(puzzlePieces)) {
+            gridsWithEnoughArea.push(grid);
         }
     });
 
-    console.log(`There are ${countImpossibleDueToAreaMismatch} grids that are impossible to solve due to area mismatch`);
-    console.log(`There are ${gridsToSolve.length} grids that are possible to solve`);
+    gridsWithEnoughArea.forEach((grid) => {
+        // If any grid has enough area to all pieces to it
+        if (grid.calculateAreaOfGrid() >= grid.calculateAreaOfBestPossibleFit()) {
+            potentiallySolvableGrids.push(grid);
+        } else {
+            gridsToBeSolved.push(grid);
+        }
+    });
+
+    console.log(`There are ${potentiallySolvableGrids.length} grids that are solvable simply by placing the pieces in the grid in the order of the goal`);
+    console.log(`There are ${gridsToBeSolved.length} grids that are not solvable simply by placing the pieces in the grid in the order of the goal and we need to keep thinking...`);
+    
+
+
+ 
+
+    // gridsToSolve.forEach((grid) => {
+    //     if (grid.calculateAreaOfGrid() < grid.calculateAreaOfBestPossibleFit()) {
+    //         console.log(`Grid ${grid.size.height}x${grid.size.width} is impossible to solve due to best possible fit mismatch`);
+    //         countImpossible++;
+    //     }
+    // });
+
+    // console.log(`There are ${countImpossible} grids that are impossible to solve.`);
+    // console.log(`There are ${gridsToSolve.length} grids that are possible to solve`);
 }
 
 const parseLine = (line: string) => {

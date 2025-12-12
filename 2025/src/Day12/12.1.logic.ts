@@ -97,4 +97,12 @@ export class Grid {
         });
         return area;
     }
+
+    calculateAreaOfBestPossibleFit() : number {
+        let area = 0;
+        this.goal.forEach((goal) => {
+            area += 9 * goal;
+        });
+        return area;
+    }
 }
