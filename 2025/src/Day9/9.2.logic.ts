@@ -6,10 +6,8 @@ export interface LineSegment {
 }
 
 export class Decider {
-    cache: Map<string, boolean>;
-
     constructor() {
-        this.cache = new Map<string, boolean>();
+        
     }
 
     calculateAreaBetweenCoordinates = (a: XYCoordinate, b: XYCoordinate): number => {
@@ -20,53 +18,74 @@ export class Decider {
     };
 
     isInterior = (coordinate: XYCoordinate, lineSegments: LineSegment[]): boolean => {
-        const cacheKey = `${coordinate.x},${coordinate.y}`;
-
-        if (this.cache.has(cacheKey)) {
-            return this.cache.get(cacheKey);
-        }
-
         // Use ray casting algorithm to determine if the coordinate is inside the polygon
         let intersections: XYCoordinate[] = [];
 
         const maxX = 9999999999999;
+        const maxY = 9999999999999;
+        const minX = -9999999999999;
+        const minY = -9999999999999;
 
         // console.log(`Checking coordinate ${coordinate.x},${coordinate.y}`);
 
-        const ray: LineSegment = {
+        const rays: LineSegment[] = [{
             p1: coordinate,
             p2: {
-                x: maxX + 1,
+                x: maxX,
                 y: coordinate.y,
             },
-        };
+        }, {
+            p1: coordinate,
+            p2: {
+                x: minX,
+                y: coordinate.y,
+            },
+        }, {
+            p1: coordinate,
+            p2: {
+                x: coordinate.x,
+                y: maxY,
+            },
+        }, {
+            p1: coordinate,
+            p2: {
+                x: coordinate.x,
+                y: minY,
+            },
+        }];
 
-        for (let i = 0; i < lineSegments.length; i++) {
-            const segment = lineSegments[i];
+        let results: boolean[] = [];
 
-            // console.log(`Checking if point ${coordinate.x},${coordinate.y} is on segment ${segment.p1.x},${segment.p1.y} to ${segment.p2.x},${segment.p2.y}`);
-            if (this.isPointOnSegment(coordinate, segment)) {
-                // console.log(`Point on segment detected at ${coordinate.x},${coordinate.y}`);
-                this.cache.set(cacheKey, true);
-                return true;
-            }
+        for (const ray of rays) {
+            for (let i = 0; i < lineSegments.length; i++) {
+                const segment = lineSegments[i];
 
-            // console.log(`Checking if segment ${segment.p1.x},${segment.p1.y} to ${segment.p2.x},${segment.p2.y} intersects with ray ${ray.p1.x},${ray.p1.y} to ${ray.p1.x + ray.p2.x},${ray.p1.y + ray.p2.y}`);
-            const intersection = this.intersects(segment, ray);
-            if (intersection !== null) {
-                if (intersections.some((i) => i.x === intersection.x && i.y === intersection.y)) {
-                    continue;
-                } else {
-                    intersections.push(intersection);
-                    // console.log(`Intersection detected at ${intersection.x},${intersection.y}`);
+                // console.log(`Checking if point ${coordinate.x},${coordinate.y} is on segment ${segment.p1.x},${segment.p1.y} to ${segment.p2.x},${segment.p2.y}`);
+                if (this.isPointOnSegment(coordinate, segment)) {
+                    // console.log(`Point on segment detected at ${coordinate.x},${coordinate.y}`);
+                    
+                    return true;
+                }
+
+                // console.log(`Checking if segment ${segment.p1.x},${segment.p1.y} to ${segment.p2.x},${segment.p2.y} intersects with ray ${ray.p1.x},${ray.p1.y} to ${ray.p1.x + ray.p2.x},${ray.p1.y + ray.p2.y}`);
+                const intersection = this.intersects(segment, ray);
+                if (intersection !== null) {
+                    if (intersections.some((i) => i.x === intersection.x && i.y === intersection.y)) {
+                        continue;
+                    } else {
+                        intersections.push(intersection);
+                        // console.log(`Intersection detected at ${intersection.x},${intersection.y}`);
+                    }
                 }
             }
+
+            // console.log(`Intersections: ${JSON.stringify(intersections)}`);
+
+            
+            results.push(intersections.length % 2 === 1);
         }
 
-        // console.log(`Intersections: ${JSON.stringify(intersections)}`);
-
-        this.cache.set(cacheKey, intersections.length % 2 === 1);
-        return intersections.length % 2 === 1;
+        return results.some((result) => result);
     };
 
     createLineSegmentsFromVertices = (vertices: XYCoordinate[]): LineSegment[] => {
@@ -154,5 +173,39 @@ export class Decider {
             }
         }
         return coordinates;
+    };
+
+    getBorderCoordinatesInRectangle = (p1: XYCoordinate, p2: XYCoordinate): XYCoordinate[] => {
+        const minX = Math.min(p1.x, p2.x);
+        const maxX = Math.max(p1.x, p2.x);
+        const minY = Math.min(p1.y, p2.y);
+        const maxY = Math.max(p1.y, p2.y);
+
+        const coordinates: XYCoordinate[] = [];
+        for (let x = minX; x <= maxX; x++) {
+            coordinates.push({ x, y: minY });
+        }
+        
+        for (let y = minY + 1; y < maxY; y++) {
+            coordinates.push({ x: maxX, y });
+        }
+        
+        for (let x = maxX - 1; x >= minX; x--) {
+            coordinates.push({ x, y: maxY });
+        }
+        
+        for (let y = maxY - 1; y > minY; y--) {
+            coordinates.push({ x: minX, y });
+        }
+        return coordinates;
+    };
+
+    getCornersOfRectangle = (p1: XYCoordinate, p2: XYCoordinate): XYCoordinate[] => {
+        return [
+            { x: p1.x, y: p1.y },
+            { x: p2.x, y: p1.y },
+            { x: p2.x, y: p2.y },
+            { x: p1.x, y: p2.y },
+        ];
     };
 }
