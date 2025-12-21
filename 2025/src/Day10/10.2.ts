@@ -9,12 +9,24 @@ const machines: Machine[] = [];
 const execute = () => {
     let totalButtonPresses = 0;
     
-    machines.forEach(machine => {
-        machine.print();
+    machines.forEach((machine, index) => {
+        // machine.print();
+
+        // const endStateMask = machine.determineEndStateMask();
+        // console.log(`End state mask: ${endStateMask}`);
+
+        const buttonsToPress = machine.determineOneButtonPressesToEndStateMask();
+        console.log(`There are ${buttonsToPress.length} ways to press the buttons for machine ${index + 1} to get to the end state mask.`);
+
+
         const buttonPresses = machine.findShortestPathToGoalState();
         totalButtonPresses += buttonPresses;
 
-        console.log(`This machine required ${buttonPresses} button presses.`);
+        console.log(`Machine ${index + 1} required ${buttonPresses} button presses.`);
+        // const buttonPresses = machine.findShortestPathToGoalState();
+        // totalButtonPresses += buttonPresses;
+
+        // console.log(`This machine required ${buttonPresses} button presses.`);
     });
 
     console.log(`Total button presses: ${totalButtonPresses}`);
@@ -22,7 +34,6 @@ const execute = () => {
 
 const parseLine = (line: string) => {
     const parts = line.split(' ');
-    let goalState = '';
     let buttons: Button[] = [];
     let joltage: number[] = [];
     
@@ -30,14 +41,13 @@ const parseLine = (line: string) => {
         if (part.charAt(0) === '[') {
             // Ignore this part
         } else if (part.charAt(0) === '(') {
-            buttons.push(new Button(part.slice(1, part.length - 1).split(',').map(Number)));
+            buttons.push(new Button(part, part.slice(1, part.length - 1).split(',').map(Number)));
         } else if (part.charAt(0) === '{') {
             joltage = part.slice(1, part.length - 1).split(',').map(Number);
-            goalState = joltage.join('#');
         }
     });
 
-    machines.push(new Machine(goalState, buttons));
+    machines.push(new Machine(joltage, buttons));
 };
 
 var lineReader = require('readline').createInterface({

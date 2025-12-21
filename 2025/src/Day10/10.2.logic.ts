@@ -1,110 +1,208 @@
 export class Button {
+    id: string;
     wires: number[];
 
-    constructor(wires: number[]) {
+    constructor(id: string,wires: number[]) {
+        this.id = id;
         this.wires = wires;
     }
 }
 
 export class Machine {
-    goalState: string;
     buttons: Button[];
-    initialState: string;
+    initialStateMask: string;
+    targetJoltages: number[];
 
-    constructor(goalState: string, buttons: Button[]) {
-        this.goalState = goalState;
+    constructor(targetJoltages: number[], buttons: Button[]) {
+        this.targetJoltages = targetJoltages;
         this.buttons = buttons;
-        this.initialState = goalState.split('#').map(() => '0').join('#');
+        this.initialStateMask = targetJoltages.map(() => '.').join('');
     }
 
     print(): void {
-        console.log(`Goal state: ${this.goalState}`);
-        console.log(`Initial state: ${this.initialState}`);
-        console.log(`Buttons: ${this.buttons.map(button => button.wires.join(',')).join(' ')}`);
+        console.log(`Goal state: ${this.targetJoltages.join(',')}`);
+        console.log(`Initial state: ${this.initialStateMask}`);
+        console.log(`Buttons: ${this.buttons.map((button) => button.wires.join(',')).join(' ')}`);
         console.log('--------------------------------');
     }
 
-    pressButton(currentState: string, button: Button): string {
-        const currentStateArray = currentState.split('#').map(Number);
+    pressButton(currentState: number[], button: Button): number[] {
         let newState: number[] = [];
 
         // Pressing a button will change the current state of the machine by flipping each bit in the button's wires
-        for (let i = 0; i < currentStateArray.length; i++) {
+        for (let i = 0; i < currentState.length; i++) {
             if (button.wires.includes(i)) {
-                newState[i] = currentStateArray[i] + 1;
+                newState[i] = currentState[i] - 1;
             } else {
-                newState[i] = currentStateArray[i];
+                newState[i] = currentState[i];
             }
         }
-        return newState.join('#');
+        return newState;
+    }
+
+    pressButtonTwice(currentState: number[], button: Button): number[] {
+        let newState = this.pressButton(currentState, button);
+        return this.pressButton(newState, button);
+    }
+
+    allZeroes(state: number[]): boolean {
+        return state.every((value) => value === 0);
+    }
+
+    determineEndStateMask(): string {
+        let mask = '';
+
+        this.targetJoltages.forEach((joltage) => {
+            if (joltage % 2 === 0) {
+                mask += '.';
+            } else {
+                mask += '#';
+            }
+        });
+
+        return mask;
+    }
+
+    determineStateMaskFromButtonPress(button: Button, currentStateMask: string): string {
+        let newStateMask = ``;
+        // Pressing a button will change the current state of the machine by flipping each bit in the button's wires
+        for (let i = 0; i < currentStateMask.length; i++) {
+            if (button.wires.includes(i)) {
+                newStateMask += currentStateMask.charAt(i) === '.' ? '#' : '.';
+            } else {
+                newStateMask += currentStateMask.charAt(i);
+            }
+        }
+        return newStateMask;
+    }
+
+    determineOneButtonPressesToEndStateMask(): Button[][] {
+        const endStateMask = this.determineEndStateMask();
+        const buttonsToPress: Button[][] = [];
+
+        // Track the path of button presses to get to the end state mask where each button can only be pressed zero or one time to get there.
+        const permutations = this.getAllPermutationsOfButtons();
+        permutations.forEach(permutation => {
+            let currentStateMask = this.initialStateMask;
+            permutation.forEach(button => {
+                currentStateMask = this.determineStateMaskFromButtonPress(button, currentStateMask);
+            });
+            if (currentStateMask === endStateMask) {
+                const sortedPermutation = permutation.sort((a, b) => a.id.localeCompare(b.id));
+
+                // Don't add the permutation if a similar permutation has already been added.
+                if (buttonsToPress.some(p => p.every((button, index) => button.id === sortedPermutation[index].id))) {
+                    return;
+                }
+                buttonsToPress.push(permutation.sort((a, b) => a.id.localeCompare(b.id)));
+            }
+        });
+        return buttonsToPress;
+    }
+
+    getAllPermutationsOfButtons(): Button[][] {
+        const permutations: Button[][] = [];
+
+        function permute(currentPerm: Button[], remaining: Button[]) {
+            if (remaining.length === 0) {
+                permutations.push(currentPerm);
+                return;
+            }
+
+            for (let i = 0; i < remaining.length; i++) {
+                // Choose the next element
+                const nextElement = remaining[i];
+                // Create new arrays for the next recursive call
+                const newRemaining = remaining.slice(0, i).concat(remaining.slice(i + 1));
+                const newPerm = currentPerm.concat(nextElement);
+
+                permutations.push(newPerm);
+
+                permute(newPerm, newRemaining);
+            }
+        }
+
+        permute([], this.buttons);
+        return permutations;
     }
 
     findShortestPathToGoalState(): number {
-        if (this.initialState === this.goalState) {
-            return 0;
-        }
+        let remainingJoltages = this.targetJoltages.map((target) => target);
 
-        const cache: Map<string, boolean> = new Map<string, boolean>();
+        // Next, determine all of the ways you can press each button at most once to get to the end state mask
+        const initialButtonPresses = this.determineOneButtonPressesToEndStateMask();
+        let fewestButtonPresses = 9999999999;
 
-        // Start by determining if there are any buttons with a wire that only appears once
-        const wireCounts = new Map<number, number>();
-        this.buttons.forEach(button => {
-            button.wires.forEach(wire => {
-                wireCounts.set(wire, (wireCounts.get(wire) || 0) + 1);
+        // Next, for each of these ways, start off by pressing those buttons.  Then we need to find a way to press the remaining buttons an even number of times that result in the final joltages.
+        // Note: Once we press the initial buttons, we have to press each additional button at least twice.  So we can actually reduce the sample size by cutting the joltages in half, and multiplying the number of ways to press the remaining buttons by 2 at the end.
+        initialButtonPresses.forEach((initialButtonsToPress: Button[]) => {
+            let countButtonPresses = 0;
+
+            let newRemainingJoltages = [...remainingJoltages];
+
+            initialButtonsToPress.forEach(button => {
+                countButtonPresses++;
+                newRemainingJoltages = this.pressButton(newRemainingJoltages, button);
             });
+
+            if (this.allZeroes(newRemainingJoltages)) {
+                fewestButtonPresses = Math.min(fewestButtonPresses, countButtonPresses);
+            } else {
+                console.log(`Initial buttons to press: ${initialButtonsToPress.map(button => button.id).join(',')}`);
+                console.log(`After pressing the initial ${countButtonPresses} buttons, the remaining joltages are: ${newRemainingJoltages.join(',')}`);
+                console.log(`Target joltages: ${this.targetJoltages.join(',')}`);
+
+                let pow = 1;
+                let halfTargetJoltages = newRemainingJoltages.map(joltage => Math.floor(joltage / 2));
+
+                while (halfTargetJoltages.every(joltage => joltage % 2 === 0)) {
+                    halfTargetJoltages = halfTargetJoltages.map(joltage => joltage / 2);
+                    pow++;
+                }
+                console.log(`Half target joltages: ${halfTargetJoltages.join(',')}`);
+                
+                console.log(`Count button presses: ${countButtonPresses}`);
+                console.log(`Fewest button presses so far: ${fewestButtonPresses}`);
+                console.log(`--------------------------------`);
+
+                const requiredButtonPresses = this.solve(halfTargetJoltages);
+                // console.log(`Required button presses for half target joltages: ${requiredButtonPresses}`);
+
+                countButtonPresses += (Math.pow(2, pow) * requiredButtonPresses);
+                
+                fewestButtonPresses = Math.min(fewestButtonPresses, countButtonPresses);
+                // console.log(`Fewest button presses: ${fewestButtonPresses}`);
+                // console.log(`--------------------------------`);
+            }
         });
+
+        return fewestButtonPresses;
+    }
+
+    solve(joltagesToGo: number[]): number {
+        const cache: Map<number[], boolean> = new Map<number[], boolean>();
 
         let steps = 0;
         let goalReached = false;
-
-        // First, we need to press any buttons with a wire that only appears once
-        const singleWireButtons = this.buttons.filter(button => button.wires.some(wire => wireCounts.get(wire) === 1));
-        let startingState = this.initialState;
-
-        if (singleWireButtons.length > 0) {
-            // We know we have to press these button exacly n times, where n is the number in the goal state for the corresponding wire.
-            singleWireButtons.forEach(button => {
-                // Find the wire that only appears once
-                const wire = button.wires.find(wire => wireCounts.get(wire) === 1);
-
-                const numberOfPresses = Number(this.goalState.split('#')[wire]);
-                console.log(`Pressing button ${button.wires.join(',')} ${numberOfPresses} times`);
-                for (let i = 0; i < numberOfPresses; i++) {
-                    startingState = this.pressButton(startingState, button);
-                    steps++;
-                }
-
-                // Once we've pressed them the correct number of times, we can remove the button from the list of buttons to consider
-                this.buttons = this.buttons.filter(b => b !== button);
-                console.log(`Buttons after pressing button: ${this.buttons.map(button => button.wires.join(',')).join(' ')}`);
-            });
-
-        }
-        
-        let statesToEvaluate: string[] = [startingState];
+        let statesToEvaluate: number[][] = [joltagesToGo];
 
         while (goalReached === false) {
-            const statesThisRound: string[] = [];
+            const statesThisRound: number[][] = [];
 
             statesToEvaluate.forEach(state => {
                 if (!cache.has(state)) {
                     cache.set(state, true);
 
-                    const newStates: string[] = [];
+                    if (this.isValidState(state)) {
+                        const newStates = this.buttons.map((button) => this.pressButton(state, button)).filter(state => this.isValidState(state));
 
-                    this.buttons.forEach(button => {
-                        const potentialNewState = this.pressButton(state, button);
-                        // console.log(`Potential new state: ${potentialNewState}`);
-                        if (this.isValidState(potentialNewState)) { 
-                            newStates.push(potentialNewState);
-                        }                        
-                    });
+                        console.log(`New states: ${newStates.map(state => state.join(',')).join('##')}`);
+                        if (newStates.find(state => this.allZeroes(state))) {
+                            goalReached = true;
+                        }
 
-                    if (newStates.indexOf(this.goalState) !== -1) {
-                        goalReached = true;
-                    }
-
-                    statesThisRound.push(...newStates);
+                        statesThisRound.push(...newStates);
+                    }                
                 }
             });
 
@@ -115,10 +213,15 @@ export class Machine {
         return steps;
     }
 
-    isValidState(state: string): boolean {
-        const stateArray = state.split('#').map(Number);
-        const goalStateArray = this.goalState.split('#').map(Number);
+    isGoalState(state: number[]): boolean {
+        return state.every((value, index) => value === this.targetJoltages[index]);
+    }
 
-        return stateArray.every((value, index) => value <= goalStateArray[index]);
+    isState(currentState: number[], targetState: number[]): boolean {
+        return currentState.every((value, index) => value === targetState[index]);
+    }
+
+    isValidState(state: number[]): boolean {
+        return state.every((value) => value >= 0);
     }
 }
