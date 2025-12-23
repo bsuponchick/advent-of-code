@@ -11,6 +11,7 @@ const execute = () => {
     
     machines.forEach((machine, index) => {
         // machine.print();
+        if (index > 0) return;
 
         // const endStateMask = machine.determineEndStateMask();
         // console.log(`End state mask: ${endStateMask}`);

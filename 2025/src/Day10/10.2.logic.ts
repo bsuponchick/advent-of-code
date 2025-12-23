@@ -8,6 +8,32 @@ export class Button {
     }
 }
 
+export class GraphNode {
+    id: number;
+    state: number[];
+    depth: number;
+    children: GraphNode[] = [];
+    
+    constructor(id: number, state: number[], depth: number) {
+        this.id = id;
+        this.state = state;
+        this.depth = depth;
+        this.children = [];
+    }
+
+    addChild(child: GraphNode) {
+        this.children.push(child);
+    }
+
+    isGoalState(): boolean {
+        return this.state.every((value) => value === 0);
+    }
+
+    isValidState(): boolean {
+        return this.state.every((value) => value >= 0);
+    }
+}
+
 export class Machine {
     buttons: Button[];
     initialStateMask: string;
@@ -180,37 +206,45 @@ export class Machine {
     }
 
     solve(joltagesToGo: number[]): number {
-        const cache: Map<number[], boolean> = new Map<number[], boolean>();
+        let counter = 0;
+        const rootNode = new GraphNode(counter++, joltagesToGo, 0);
+        const queue: GraphNode[] = [rootNode];
+        const cache: Map<number, boolean> = new Map<number, boolean>();
+        
+        while (queue.length > 0) {
+            console.log(`Queue size: ${queue.length}`);
+            const currentState = queue.shift();
+            console.log(`Current state: ${currentState.state.join(',')}`);
 
-        let steps = 0;
-        let goalReached = false;
-        let statesToEvaluate: number[][] = [joltagesToGo];
+            if (currentState.isValidState() === false) {
+                throw new Error(`State is invalid: ${JSON.stringify(currentState.state)}, skipping`);
+            }
 
-        while (goalReached === false) {
-            const statesThisRound: number[][] = [];
+            if (cache.has(currentState.id)) {
+                console.log(`State already visited, skipping`);
+                continue;
+            }
 
-            statesToEvaluate.forEach(state => {
-                if (!cache.has(state)) {
-                    cache.set(state, true);
+            console.log(`State not visited, adding to cache`);
+            cache.set(currentState.id, true);
 
-                    if (this.isValidState(state)) {
-                        const newStates = this.buttons.map((button) => this.pressButton(state, button)).filter(state => this.isValidState(state));
+            if (currentState.isGoalState()) {
+                return currentState.depth;
+            }
 
-                        console.log(`New states: ${newStates.map(state => state.join(',')).join('##')}`);
-                        if (newStates.find(state => this.allZeroes(state))) {
-                            goalReached = true;
-                        }
-
-                        statesThisRound.push(...newStates);
-                    }                
-                }
+            const buttonsToPress = this.buttons.filter((button) =>{
+                let invalid = button.wires.some(wire => currentState.state[wire] <= 0)
+                return !invalid;
             });
 
-            statesToEvaluate = statesThisRound;
-            steps++;
+            buttonsToPress.forEach(button => {
+                const newState = new GraphNode(counter++, this.pressButton(currentState.state, button), currentState.depth + 1);
+                currentState.addChild(newState);
+                queue.push(newState);
+            });
         }
 
-        return steps;
+        return 9999999999;
     }
 
     isGoalState(state: number[]): boolean {
