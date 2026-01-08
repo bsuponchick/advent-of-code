@@ -58,6 +58,10 @@ export class Graph {
     }
 
     addNode(node: Node) {
+        if (this.nodes.find((n) => n.id === node.id)) {
+            return;
+        }
+
         this.nodes.push(node);
     }
 
@@ -69,6 +73,10 @@ export class Graph {
     }
 
     addEdge(edge: Edge) {
+        if (this.edges.find((e) => e.start.id === edge.start.id && e.end.id === edge.end.id)) {
+            return;
+        }
+
         this.edges.push(edge);
         edge.start.addEdge(edge);
         edge.end.addEdge(edge);
